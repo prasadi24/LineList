@@ -4,11 +4,20 @@
 @{
     var host = Context.Request.Host.Host.ToLower();
     var isProduction = host == "linelist.cenovus.com";
-    var rawName = @User.Claims.Where(c => c.Type == "name").FirstOrDefault().Value;
-    var cleanedName = rawName.Contains(",") ? string.Join(" ", rawName.Split(',').Reverse().Select(s => s.Trim())) : rawName;
-    var initials = string.Join("", cleanedName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(n => n[0])).ToUpper();
+
+    var nameClaim = User?.Claims?.FirstOrDefault(c => c.Type == "name");
+    var rawName = nameClaim?.Value ?? User?.Identity?.Name ?? "User";
+    var cleanedName = rawName.Contains(",")
+        ? string.Join(" ", rawName.Split(',').Reverse().Select(s => s.Trim()))
+        : rawName;
+    var initials = string.Join("", cleanedName
+        .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+        .Where(part => !string.IsNullOrWhiteSpace(part))
+        .Select(part => part[0])).ToUpper();
+
     var cpwUrl = Configuration["ConfigKeys:BackToCpw"];
 }
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -383,7 +392,11 @@
                                 <div class="dropdown-divider"></div>
                                 <div class="d-flex">
                                     <div class="flex-grow-1">
-                                        <span class="fw-semibold d-block">@User.Claims.Where(c => c.Type == "name").FirstOrDefault().Value</span>
+
+                                        <span class="fw-semibold d-block">@cleanedName</span>
+
+
+                                          
                                         <small class="text-muted">
                                             @User.Identity.Name
                                         </small>

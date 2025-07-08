@@ -43,7 +43,7 @@ namespace LineList.Cenovus.Com.Domain.Models
         public virtual FluidPhase FluidPhase { get; set; }
         public virtual OperatingMode OperatingMode { get; set; }
 
-        public Guid? pressureProtectionId { get; set; } //SER 435.  Changes by Armando Chaves.
+        public Guid? PressureProtectionId { get; set; } //SER 435.  Changes by Armando Chaves.
         public virtual PressureProtection PressureProtection { get; set; } //SER 435.  Changes by Armando Chaves.
         public bool? RequiresCsaInformation { get; set; }
     }

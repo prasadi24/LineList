@@ -738,7 +738,7 @@ namespace LineList.Cenovus.Com.UI.Controllers
                 csaClassLocationId = mode.CsaClassLocationId,
                 pipeMaterialSpecification = mode.PipeMaterialSpecification,
                 isSourService = mode.IsSourService,
-                pressureProtectionId = mode.pressureProtectionId,
+                pressureProtectionId = mode.PressureProtectionId,
                 isAbsaRegistration = mode.IsAbsaRegistration
 
             });
@@ -779,7 +779,7 @@ namespace LineList.Cenovus.Com.UI.Controllers
                 //existing.LineRoutingTo = dto.LineRoutingTo;
                 existing.OperatingPressurePipe = dto.OperatingPressurePipe;
                 existing.OperatingTemperaturePipe = dto.OperatingTemperaturePipe;
-                existing.pressureProtectionId = dto.pressureProtectionId;
+                existing.PressureProtectionId = dto.PressureProtectionId;
                 existing.IsAbsaRegistration = dto.IsAbsaRegistration;
                 existing.CodeId = dto.CodeId;
                 existing.Notes = dto.Notes;

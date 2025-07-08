@@ -10,6 +10,6 @@ public class PressureProtectionRepository : Repository<PressureProtection>, IPre
 
     public bool HasDependencies(Guid id)
     {
-        return Db.LineRevisionOperatingModes.Any(m => m.pressureProtectionId == id);
+        return Db.LineRevisionOperatingModes.Any(m => m.PressureProtectionId == id);
     }
 }

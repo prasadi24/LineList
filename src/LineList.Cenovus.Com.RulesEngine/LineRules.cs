@@ -271,7 +271,7 @@ namespace LineList.Cenovus.Com.RulesEngine
                         opMode.ModifiedBy = userName;
                         opMode.ModifiedOn = DateTime.Now;
                         opMode.IsAbsaRegistration = string.Empty; //SER 435.  Changes by Armando Chaves.
-                        opMode.pressureProtectionId = (Guid?)null; //Armand. SER 435.Revisado
+                        opMode.PressureProtectionId = (Guid?)null; //Armand. SER 435.Revisado
                         await lineRevisionOperatingModeService.Add(opMode);
                     }
 
@@ -436,7 +436,7 @@ namespace LineList.Cenovus.Com.RulesEngine
                             diffs = diffs || ((opMode.OperatingTemperatureAnnulus ?? string.Empty) != (issuedOpMode.OperatingTemperatureAnnulus ?? string.Empty));
                             diffs = diffs || ((opMode.OperatingTemperaturePipe ?? string.Empty) != (issuedOpMode.OperatingTemperaturePipe ?? string.Empty));
                             diffs = diffs || ((opMode.PipeMaterialSpecification ?? string.Empty).Trim().ToUpper() != (issuedOpMode.PipeMaterialSpecification ?? string.Empty).Trim().ToUpper());
-                            diffs = diffs || (opMode.pressureProtectionId != issuedOpMode.pressureProtectionId); //SER 435.  Changes by Armando Chaves.
+                            diffs = diffs || (opMode.PressureProtectionId != issuedOpMode.PressureProtectionId); //SER 435.  Changes by Armando Chaves.
 
                             // diffs = diffs || (opMode.ModularId != issuedOpMode.ModularId);
                         }
@@ -688,7 +688,7 @@ namespace LineList.Cenovus.Com.RulesEngine
                 primaryOpMode.OperatingTemperatureAnnulus = string.Empty;
                 primaryOpMode.OperatingTemperaturePipe = string.Empty;
                 primaryOpMode.PipeMaterialSpecification = string.Empty;
-                primaryOpMode.pressureProtectionId = null; //SER 435.  Changes by Armando Chaves.
+                primaryOpMode.PressureProtectionId = null; //SER 435.  Changes by Armando Chaves.
 
                 //primaryOpMode.ModularId  = null;
             }
