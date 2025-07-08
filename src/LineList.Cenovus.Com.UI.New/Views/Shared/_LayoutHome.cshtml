@@ -20,7 +20,6 @@
     var cpwUrl = Configuration["ConfigKeys:BackToCpw"];
 }
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,14 +106,14 @@
     <!-- App Logic -->
     <script>
         $(document).ready(function () {
-            (function () {$('[data-toggle="tooltip"]').tooltip()});
+            (function () { $('[data-toggle="tooltip"]').tooltip() })();
 
-             $.validator.setDefaults({
+            $.validator.setDefaults({
                 ignore: []
             });
 
-             $(window).on('resize', function () {
-                $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+            $(window).on('resize', function () {
+                $.fn.dataTable.tables({ visible: true, api: true }).columns.adjust();
             });
 
             const blockUiOptions = {
@@ -160,32 +159,30 @@
                 }, 500);
             }, 3000);
         }
-
     </script>
 </head>
 
-
 <body>
     <div id="header1">
-        <div class="logo"> <a href="@Url.Content("~/")" id="site-logo"><img src="@Url.Content("~/img/logo.png")" alt="Line List" /></a></div>
+        <div class="logo">
+            <a href="@Url.Content("~/")" id="site-logo">
+                <img src="@Url.Content("~/img/logo.png")" alt="Line List" />
+            </a>
+        </div>
         <div class="logo">
             <img id="cenovus-logo" src="https://mc-3405db07-6660-4b4e-8bc8-1763-cdn-endpoint.azureedge.net/-/media/Project/WWW/Images/Brand/Cenovus-logo.svg" alt="Cenovus Logo" />
         </div>
     </div>
     <header11>
-        <nav class="navbar navbar-expand-md navbar-light bg-body shadow"
-             id="myTopnav">
+        <nav class="navbar navbar-expand-md navbar-light bg-body shadow" id="myTopnav">
             <i class="bx bx-menu" hidden id="sidebarOpen"></i>
             <div class="container-md">
                 <div class="collapse navbar-collapse" id="navbarnav">
                     @await Component.InvokeAsync("Navigation")
-
                 </div>
             </div>
             <a class="nav-link dropdown-toggle hide-arrow" style="width:135px" href="@cpwUrl">
-                <span>
-                    <i class="fa-solid fa-wrench"></i>
-                </span>
+                <span><i class="fa-solid fa-wrench"></i></span>
                 <span class="navlink">Back to CPW</span>
             </a>
             <ul style="margin-bottom: 0px;">
@@ -197,40 +194,34 @@
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end">
                         <li>
-
                             <a class="dropdown-item" href="#">
                                 <span class="d-flex align-items-center align-middle"><b>You are currently logged in as </b> </span>
                                 <div class="dropdown-divider"></div>
                                 <div class="d-flex">
-
                                     <div class="flex-grow-1">
-                                        <span class="fw-semibold d-block">@User.Claims.Where(c => c.Type == "name").FirstOrDefault().Value</span>
-                                        <small class="text-muted">
-                                            @User.Identity.Name
-                                        </small>
+                                        <span class="fw-semibold d-block">@User?.Claims?.FirstOrDefault(c => c.Type == "name")?.Value ?? "User"</span>
+                                        <small class="text-muted">@User?.Identity?.Name ?? "unknown"</small>
                                         @if (!isProduction)
                                         {
-                                            var groupClaims = User.Claims
-                                            .Where(c => c.Type.Contains("role"))
-                                            .ToList();
-                                            <ul>
-                                                @foreach (var claim in groupClaims)
-                                                {
-                                                    <li>@claim.Type : @claim.Value</li>
-                                                }
-                                            </ul>
-                                        }                                        
+                                            var groupClaims = User?.Claims?.Where(c => c.Type.Contains("role")).ToList();
+                                            if (groupClaims != null && groupClaims.Any())
+                                            {
+                                                <ul>
+                                                    @foreach (var claim in groupClaims)
+                                                    {
+                                                        <li>@claim.Type : @claim.Value</li>
+                                                    }
+                                                </ul>
+                                            }
+                                        }
                                     </div>
                                 </div>
                             </a>
                         </li>
                         @if (!isProduction)
                         {
-
                             <li>
-                                <div class="dropdown-item text-warning">
-                                    <strong>Current Environment:</strong> TQA
-                                </div>
+                                <div class="dropdown-item text-warning"><strong>Current Environment:</strong> TQA</div>
                                 <div class="dropdown-divider"></div>
                             </li>
                         }
@@ -242,83 +233,76 @@
             </ul>
         </nav>
     </header11>
+
     <div class="col-md-12">
         <nav class="sidebar col-md-3">
             <div class="menu_content">
                 <ul class="menu_items">
-                    <ul class="menu_items">
+                    <li class="item">
+                        <a target="_blank" href="/Files/Line List Application User Guide.docx" class="nav_link">
+                            <span class="navlink">Line List User Guide</span>
+                        </a>
+                    </li>
+                    <hr />
+                    @if (homeData?.IsCenovusAdmin == true)
+                    {
                         <li class="item">
-                            <a target="_blank" href="/Files/Line List Application User Guide.docx" class="nav_link">
-                                <span class="navlink">Line List User Guide</span>
+                            <a target="_blank" href="/Files/Line List Application Admin User Guide.doc" class="nav_link">
+                                <span class="navlink">Line List Admin User Guide</span>
                             </a>
                         </li>
                         <hr />
-                        @if (homeData.IsCenovusAdmin)
-                        {
-                            <li class="item">
-                                <a target="_blank" href="/Files/Line List Application Admin User Guide.doc" class="nav_link">
-                                    <span class="navlink">Line List Admin User Guide</span>
-                                </a>
+                    }
+                    <li class="item">
+                        <a target="_blank" href="/Files/Old Pilot Plant Masterlist Jan 19 2015.xlsx" class="nav_link">
+                            <span class="navlink" style="text-wrap:auto;">FC Pilot Plant Masterlist 2015/01/19</span>
+                        </a>
+                    </li>
+                    <li class="item" style="margin-bottom:35px">
+                        <small class="text-light fw-semibold">Stats</small>
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Total Line Lists
+                                <span class="badge bg-danger">@homeData?.TotalLineList</span>
                             </li>
-                            <hr />
-                        }
-                        <li class="item">
-                            <a target="_blank" href="/Files/Old Pilot Plant Masterlist Jan 19 2015.xlsx" class="nav_link">
-
-                                <span class="navlink" style="text-wrap:auto;">FC Pilot Plant Masterlist 2015/01/19</span>
-                            </a>
-                        </li>
-
-                        <li class="item" style="margin-bottom:35px">
-
-                            <small class="text-light fw-semibold">Stats</small>
-                            <ul class="list-group">
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Total Line Lists
-                                    <span class="badge bg-danger">@homeData?.TotalLineList</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Avg Lines per List
-                                    <span class="badge bg-primary">@homeData?.AverageLines</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Users
-                                    <span class="badge bg-primary">@homeData?.TotalUsers</span>
-                                </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Last Update
-                                    <span class="badge bg-secondary rounded-pill">@homeData?.LastUpdated</span>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Avg Lines per List
+                                <span class="badge bg-primary">@homeData?.AverageLines</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Users
+                                <span class="badge bg-primary">@homeData?.TotalUsers</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Last Update
+                                <span class="badge bg-secondary rounded-pill">@homeData?.LastUpdated</span>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
 
                 <div class="bottom_content">
                     <div class="bottom">
-                        <div class="footer-left">
-                            © Copyright 2025 Cenovus Energy Inc.
-                        </div>
+                        <div class="footer-left">© Copyright 2025 Cenovus Energy Inc.</div>
                         <div class="footer-right">
-                            Need Help or Have Suggestions?
-                            <a href="mailto:line.list@cenovus.com">line.list@cenovus.com</a>
+                            Need Help or Have Suggestions? <a href="mailto:line.list@cenovus.com">line.list@cenovus.com</a>
                         </div>
                     </div>
                 </div>
             </div>
         </nav>
+
         <div class="container col-md-9">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
-
     </div>
+
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-    <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
     <script src="~/js/sidemenu.js"></script>
 </body>
 </html>
-
