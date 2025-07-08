@@ -1,0 +1,78 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.EpProjectUserRole
+@model EpProjectUserRoleEditDto
+
+<form asp-action="Update" id="EpProjectUserRoleForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+     
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <input type="hidden" id="ProjectUserRoleId" asp-for="Id" class="form-control" />
+                <!-- EpProjectUserRole Details Tab -->
+                <div class="tab-pane fade show active" id="EpProjectUserRole-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label asp-for="EpCompanyName" class="col-md-4 text-black">EP:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpCompanyName" class="form-control" disabled />
+                            <span asp-validation-for="EpCompanyName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="EpProjectName" class="col-md-4 text-black">Project:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectName" class="form-control" disabled />
+                            <input type="hidden" id="EpProjectId" asp-for="EpProjectId" class="form-control" />
+                            <span asp-validation-for="EpProjectName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="UserName" class="col-md-4 text-black">User Name:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <!-- CHANGED: Replaced input with select for EP-specific users -->
+                            <select asp-for="UserName" id="UserName" class="form-control flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.Users, "Key", "Value"))">
+                                <option value="">-- Select User --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Project Role:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="EpProjectRoleId" class="form-control flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.ProjectRole, "Id", "Name_dash_Description"))">
+                                <option value="">-- Select Project Role --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="EpProjectRoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <input asp-for="CreatedBy" type="hidden" />
+    <input asp-for="CreatedOn" type="hidden" />
+    <input asp-for="EpProjectRoleId" type="hidden" />
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="EpProjectId" type="hidden" />
+
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-Role-Delete" data-id="@Model.Id" id="btnDeleteRole">Delete</button>
+        <button type="submit" class="btn btn-primary" id="btnUpdateEpProjectUserRole">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+    @section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,356 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.NotesConfiguration
+@model IEnumerable<NotesConfigurationResultDto>
+
+<div class="mt-md-0">
+    <div class="row">
+        <div class="card mb-md-1">
+            <div class="card-header">
+                <h5 class="mb-3 page-header">Notes Configuration</h5>
+                <hr />
+            </div>
+
+            <div class="card-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <button class="btn btn-primary" id="btnCreateNew">
+                        <i class="fas fa-plus"></i> ADD NEW NOTES CONFIGURATION
+                    </button>
+                    @* <div class="d-flex align-items-center">
+                        <button id="exportExcel" class="btn btn-primary">
+                            <i class="fas fa-file-excel"></i> EXPORT TO EXCEL
+                        </button>
+                    </div> *@
+                </div>
+            </div>
+            <div class="table">
+                <table id="dataTable" class="table">
+                    <thead>
+                        <tr>
+                            <th><button id="toggleFilters" class="btn-primary custom-icon-hover"><i class="fas fa-search"></i></button> Action</th>
+                            <th>Facility</th>
+                            <th>Specification</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                            <th>Notes Document</th>
+                        </tr>
+                        <tr id="searchInputs" class="filter-row">
+                            <th></th>
+                            <th><input class="form-control" placeholder="Facility" /></th>
+                            <th><input class="form-control" placeholder="Specification" /></th>
+                            <th><input class="form-control" placeholder="File Name" /></th>
+                            <th><input class="form-control" placeholder="File Size" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var note in Model)
+                        {
+                            <tr data-id="@note.Id">
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary btn-replace" data-id="@note.Id" data-toggle="tooltip" title="Replace Notes Configuration">
+                                        <i class="fas fa-rotate"></i>
+                                    </button>
+                                    <input type="file" class="file-input d-none" accept="application/pdf" />
+                                    <button class="btn btn-sm btn-outline-primary btn-download" onclick="downloadFile('@note.Id')" data-id="@note.Id" data-toggle="tooltip" data-placement="right" title="Download Notes Configuration">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary btn-update" data-id="@note.Id" data-facility="@note.FacilityName" data-spec="@note.SpecificationName" data-toggle="tooltip" data-placement="right" title="Details">
+                                        <i class="fas fa-file-import"></i>
+                                    </button>
+                                </td>
+                                <td>@note.FacilityName</td>
+                                <td>@note.SpecificationName</td>
+                                <td>@note.FileName</td>
+                                <td> @(string.Format("{0:0.##} MB", note.FileData.Length / (1024.0 * 1024.0)))</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(note.FileName))
+                                    {
+                                        <a href="#" class="view-pdf-link nav-link" style="text-decoration:underline" data-id="@note.Id" data-filename="@note.FileName">Preview Document</a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">No document</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="notesConfigurationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title page-header"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="pdfViewerModal" tabindex="-1" aria-labelledby="pdfViewerModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="pdfViewerModalLabel">Preview Notes Document</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" style="height: 80vh;">
+                <iframe id="pdfViewerFrame" src="" width="100%" height="100%" style="border: none;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            initializeDataTable();
+            table.on('draw', function () { updateMoveButtons(); });
+            setupEventHandlers();
+
+        });
+
+        //hide the search toggle in datatable
+        $('.filter-row').hide();
+
+        //Toggle filter button click
+        $('#toggleFilters').click(function () {
+            $('.filter-row').toggle();
+        });
+
+
+
+        function initializeDataTable() {
+            let tableHeight = window.innerHeight - 150;
+
+            window.table = $('#dataTable').DataTable({
+                dom: 'Brtlip',
+               orderCellsTop: true,  order: [[1, 'asc']],
+                scrollY: '58vh',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                responsive: true,
+                fixedHeader: true,
+               select: { style: 'single' },
+                buttons: [{
+                     extend: 'excelHtml5',
+                    text: 'Export to Excel', title: null,filename: 'LookupTable',customize: customizeExcelExport,
+                    className: 'btn btn-primary export-button',
+                    exportOptions: {
+                        columns: ":not(:first-child)",
+                        modifier: {
+                            search: "applied",
+                               order: "applied", selected: null
+                        }
+                    }
+                }],
+                columnDefs: [
+                    { targets: 0, orderable: false, searchable: false, width: '120px' },
+                    { targets: 1, width: '100px' },
+                    { targets: 2, width: '100px' },
+                    { targets: 3, width: '300px' },
+                    { targets: 4, width: '100px' },
+                    { targets: 5, orderable: false, searchable: false, width: '150px' }
+                ],
+                initComplete: function () {
+                    let table = this;
+                    this.api().columns().every(function (index) {
+                        if (index === 0) return;
+                        $('input', $('#searchInputs th').eq(index)).on('keyup change', function () {
+                            table.api().column(index).search(this.value).draw();
+                            this.header().style.width = this.width() + "px";
+
+                        });
+                    });
+                }
+            });
+        }
+
+        function setupEventHandlers() {
+
+
+            // Export to Excel
+            $('#exportExcel').on('click', function () {
+                table.button(0).trigger();
+            });
+
+            // Open Create Notes Configuration Modal
+            $('#btnCreateNew').on('click', function () {
+                opennotesConfigurationModal('Create', '/NotesConfiguration/Create','');
+            });
+
+            // Open Update Notes Configuration Modal (Event Delegation)
+            $(document).on('click', '.btn-update', function () {
+                let NotesConfigurationId = $(this).data("id");
+                let facilityName = $(this).data("facility");
+                let specName = $(this).data("spec");
+                 const name = facilityName + ' - '+ specName;
+                opennotesConfigurationModal('Update', '/NotesConfiguration/Update/' + NotesConfigurationId,name);
+            });
+
+            // Delete Notes Configuration
+            $(document).on('click', '.btn-delete', function () {
+                let NotesConfigurationId = $(this).data("id");
+               
+                if (confirm('Are you sure you want to delete this Notes Configuration: ' +  $(this).data("name") + '?')) {
+                    $.ajax({
+                        url: "/NotesConfiguration/Delete/" + NotesConfigurationId,
+                        type: "DELETE",
+                        success: function (response) {
+                            if (response.success) {
+                                showToast("File deleted successfully", "success", function () {
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                });
+                                location.reload();
+                            } else {
+                                alert(response.errorMessage || "Error deleting Notes Configuration.");
+                            }
+                        },
+                        error: function (error) {
+                             console.error("Error deleting record", error);
+                        }
+                    });
+                }
+            });
+
+            // Submit Create/Update Form
+                    // Submit Create/Update Form
+                $(document).on('click', '#btnSaveNotesConfiguration', function (e) {
+                    e.preventDefault();
+                    let form = $("#notesConfigurationForm");
+
+                    // Validate the form (optional if using Unobtrusive)
+                    if (!form.valid()) return;
+
+                    let formData = new FormData(form[0]); // Includes file and fields
+
+                   let action = form.attr("action");
+
+                    $.ajax({
+                        url: action,
+                        type: "POST",
+                        data: formData,
+                        processData: false, // Required for FormData
+                        contentType: false, // Required for FormData
+                        success: function (response) {
+                            if (response.success) {
+                                $('#notesConfigurationModal').modal('hide');
+                                showToast("File Uploaded successfully", "success", function () {
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                });
+                            } else {
+                                  showToast("Error saving record: " + response.errorMessage, "error");
+                            }
+                        },
+                        error: function (error) {
+                            showToast("Error saving record: " + error, "error");
+                        }
+                    });
+                });
+
+         $(document).on("click", ".view-pdf-link", function (e) {
+            e.preventDefault();
+            const id = $(this).data("id");
+
+            $.ajax({
+                url: `/NotesConfiguration/ViewDocument/${id}`,
+                type: "GET",
+                xhrFields: {
+                    responseType: 'blob' // Important to handle binary response
+                },
+                success: function (data) {
+                    const blob = new Blob([data], { type: "application/pdf" });
+                    const url = URL.createObjectURL(blob);
+
+                    $("#pdfViewerFrame").attr("src", url);
+                    $("#pdfViewerModal").modal("show");
+                },
+                error: function () {
+                    alert("Failed to load the PDF file.");
+                }
+            });
+        });
+
+         $(document).on("click", ".btn-replace", function () {
+            const $btn = $(this);
+            const $fileInput = $btn.closest("td").find(".file-input");
+
+            // Store context in data attributes
+            $fileInput.data("id", $btn.data("id"));
+            $fileInput.data("facility-id", $btn.data("facility-id"));
+            $fileInput.data("spec-id", $btn.data("spec-id"));
+
+            $fileInput.click(); // Open file dialog
+        });
+
+        // Handle file selection
+        $(document).on("change", ".file-input", function () {
+            const fileInput = this;
+            const file = fileInput.files[0];
+
+            if (!file || file.type !== "application/pdf") {
+                alert("Please select a valid PDF file.");
+                return;
+            }
+
+            const id = $(fileInput).data("id");
+
+            const formData = new FormData();
+            formData.append("uploadedFile", file);
+            formData.append("Id", id);
+
+            $.ajax({
+                url: "/NotesConfiguration/Replace", // You will implement this action
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showToast("File replaced successfully", "success");
+                        setTimeout(() => location.reload(), 1000);
+                    } else {
+                        showToast(response.errorMessage || "Error uploading file", "error");
+                    }
+                },
+                error: function () {
+                    showToast("Upload failed", "error");
+                }
+            });
+
+            // Reset the input for next time
+            $(fileInput).val('');
+        });
+
+        }
+
+        function opennotesConfigurationModal(action, url,name) {
+            let modal = $('#notesConfigurationModal');
+            let title = action === 'Create' ? 'Add a New Notes Configuration' : 'Notes Configuration: ' + name ;
+
+            $.get(url, function (response) {
+                $("#modalContent").html(response);
+                $(".modal-title").text(title);
+                $.validator.unobtrusive.parse("#modalContent");
+                modal.modal('show');
+            }).fail(function () {
+                alert("Error loading form.");
+            });
+        }
+         function downloadFile(id) {
+            window.location.href = '/NotesConfiguration/Download/' + id;
+        }
+    </script>
+}

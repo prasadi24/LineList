@@ -1,0 +1,70 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.EpProjectUserRole
+@model EpProjectUserRoleAddDto
+
+<form asp-action="Create" id="EpProjectUserRoleFormCreate" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+     
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- EpProjectUserRole Details Tab -->
+                <div class="tab-pane fade show active" id="EpProjectUserRole-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label asp-for="EpCompanyName" class="col-md-4 text-black">EP:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpCompanyName" id="EpCompanyName" class="form-control" disabled />
+                            <span asp-validation-for="EpCompanyName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="EpProjectName" class="col-md-4 text-black">Project:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectName" id="EpProjectName" class="form-control" disabled />
+                            <input type="hidden" id="RoleEpProjectId" asp-for="EpProjectId" class="form-control" />
+                            <span asp-validation-for="EpProjectName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="UserName" class="col-md-4 text-black">User Name:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <!-- CHANGED: Replaced input with select for EP-specific users -->
+                            <select asp-for="UserName" id="RoleUserName" class="form-control flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.Users, "Key", "Value"))">
+                                <option value="">-- Select User --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="UserName" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Project Role:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="EpProjectRoleId" id="RoleEpProjectRoleId" class="form-control flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.ProjectRole, "Id", "Name_dash_Description"))">
+                              
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="EpProjectRoleId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>               
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnAddEpProjectUserRole1">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    
+}

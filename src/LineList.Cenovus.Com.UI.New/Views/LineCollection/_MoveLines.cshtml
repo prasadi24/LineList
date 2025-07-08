@@ -1,0 +1,31 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model MoveLinesViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <form id="moveLinesForm" method="post" asp-action="MoveLines">
+            <div class="form-group">
+                <label for="SelectedEPProjectId">To EP Project:</label>
+                <select asp-for="SelectedEPProjectId" class="form-control" asp-items="@(new SelectList(Model.EPProjects, "Id", "ProjectName", Model.SelectedEPProjectId))">
+                    <option value="">-- Select EP Project --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="SelectedLineListId">To Line List:</label>
+                <select asp-for="SelectedLineListId" class="form-control" asp-items="@(new SelectList(Model.LineLists, "Id", "LineListName", Model.SelectedLineListId))">
+                    <option value="">-- Select Line List --</option>
+                </select>
+                <text>Note: only line lists in Draft status will be shown.</text>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" id="btnmoveLines">Move</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+            <div class="alert alert-warning" id="validateMovelines" style="display: none;">
+                <strong>Required Field</strong>: Both 'To EP Project' and 'To Line List' are required.
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,5 @@
+﻿  ALTER TABLE dbo.EpProject
+  ADD ProjectTypeId UNIQUEIDENTIFIER NULL;
+
+   ALTER TABLE dbo.EpProject
+  ADD FacilityId UNIQUEIDENTIFIER NULL;

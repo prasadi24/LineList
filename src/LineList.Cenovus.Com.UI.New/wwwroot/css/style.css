@@ -1,0 +1,446 @@
+﻿html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* Prevents page scrollbars */
+}
+
+body {
+    font-family: Arial !important;
+    margin-top: 90px;
+    color: black !important;
+    font-size: 9pt !important;
+}
+
+.bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+@media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+        font-size: 3.5rem;
+    }
+}
+
+.b-example-divider {
+    width: 100%;
+    height: 3rem;
+    background-color: rgba(0, 0, 0, .1);
+    border: solid rgba(0, 0, 0, .15);
+    border-width: 1px 0;
+    box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+}
+
+.b-example-vr {
+    flex-shrink: 0;
+    width: 1.5rem;
+    height: 100vh;
+}
+
+.bi {
+    vertical-align: -.125em;
+    fill: currentColor;
+}
+
+.text-brand {
+    color: #244c5a;
+}
+
+.main-content {
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-top: 1%;
+}
+
+h2 {
+    color: #234b59 !important;
+}
+
+.btn-primary {
+    background-color: #6ba4b8 !important;
+    color: #fff !important;
+    border-radius: 5px !important;
+    border: 1px solid black;
+}
+
+.btn-primary2 {
+    background-color: #6ba4b8 !important;
+    color: #fff !important;
+    border-radius: 5px !important;
+    width: 130px;
+    border: 1px solid black;
+}
+
+.btn-danger2 {
+    width: 150px;
+}
+
+.btn.disabled {
+    background-color: #6ba4b8;
+}
+
+.btn-success.disabled {
+    color: #fff !important;
+    background-color: #6ba4b8;
+    border-color: #6ba4b8;
+}
+
+.btn-success:hover {
+    background-color: #244c5a;
+    color: #fff !important;
+}
+
+.btn:hover {
+    background-color: #244c5a;
+    color: #fff !important;
+}
+
+a {
+    color: #244c5a;
+}
+
+.card {
+    padding: 10px;
+}
+
+.container {
+    margin-top: 7px;
+    margin-left: 260px;
+    min-width: fit-content !important;
+    min-height: fit-content;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+}
+
+.topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    box-shadow: 0 3px 3px #234b5933;
+    z-index: 1000;
+}
+
+#myTopnav ul {
+    list-style: none; /* Removes bullet points */
+    padding: 0; /* Removes default padding */
+    margin-right: 10px; /* Removes default margin */
+    gap: 30px;
+    font-size: 10pt !important
+}
+
+.navbar-nav {
+    margin-left: 5px;
+}
+
+.dropdown-menu {
+    z-index: 1050 !important; /* Increase the z-index */
+}
+
+.status-deleted {
+    /* text-decoration: line-through; */
+    background: transparent url('../img/ui-bg_40x40-line.png');
+}
+
+.status-demo {
+    background: transparent url(../img/ui-bg_diagonals-medium_75_dddddd_40x40.png);
+}
+
+.status-mistake {
+    background-color: lightgrey;
+    color: #999999;
+}
+
+table.dataTable1 tbody tr {
+    background-color: lightgrey;
+}
+
+#contextMenu {
+    background: #fff;
+    border: 1px solid gray;
+    padding: 2px;
+    display: inline-block;
+    min-width: 100px;
+    -moz-box-shadow: 2px 2px 2px silver;
+    -webkit-box-shadow: 2px 2px 2px silver;
+}
+
+    #contextMenu li {
+        padding: 4px;
+        list-style: none;
+        cursor: pointer;
+        padding-left: 14px;
+    }
+
+        #contextMenu li:hover {
+            background-color: white;
+        }
+
+table.display.dataTable > tbody > tr.selected > *,
+table.display.dataTable > tbody > tr.odd.selected > *,
+table.display.dataTable > tbody > tr.selected:hover > * {
+    box-shadow: inset 0 0 0 9999px #acbad4 !important;
+    color: #333;
+    background-color: #fff;
+}
+
+.table-responsive {
+    height: 100vh !important;
+}
+
+text-blue {
+    color: #0d6efd;
+}
+
+text-normal {
+    color: #0d6efd;
+}
+
+.ui-dialog {
+    z-index: 1092 !important;
+    position: absolute !important;
+}
+
+.ui-widget-overlay {
+    z-index: 1091 !important;
+}
+
+.nav-item1 {
+    background: white !important;
+}
+
+.nav-link1 {
+    color: black !important;
+}
+
+.ui-state-active {
+    border: 1px solid #c5c5c5;
+}
+
+.ui-tooltip {
+    background: yellow;
+    color: black !important;
+    border: 1px solid black;
+    font-weight: bold;
+    padding: 5px !important;
+    white-space: pre-line !important;
+}
+
+    .ui-tooltip::before,
+    .ui-tooltip::after {
+        display: none !important;
+    }
+
+.ui-tooltip-content {
+    max-width: 300px !important;
+    word-wrap: break-word;
+}
+
+.export-button {
+    display: none !important;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.table-container {
+    flex-grow: 1; /* Makes the table take up remaining space */
+    overflow: hidden; /* Ensures scrolling is inside DataTable */
+}
+
+.dataTables_wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.dataTables_scrollBody {
+    flex-grow: 1;
+    overflow-y: auto !important; /* Enables vertical scrolling */
+    max-height: calc(100vh - 150px); /* Adjust based on header/footer height */
+}
+
+table.dataTable tbody > tr.selected, table.dataTable tbody > tr > .selected {
+    background-color: #6ba4b8;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #6ba4b8 !important;
+}
+
+.nav-tabs .nav-item .nav-link:hover, .nav-tabs .nav-item .nav-link:focus {
+    color: white !important;
+    background-color: #244c5a !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: white !important;
+}
+
+.page-header {
+    font: 12pt Arial !important;
+    color: #6ba4b8 !important;
+    font-weight: bold !important;
+}
+
+textarea {
+    resize: none !important;
+}
+
+.tab-content {
+    border: 1px solid #d9dee3 !important;
+}
+
+.table:not(.table-dark) th {
+    color: #fff !important;
+}
+
+.text-black {
+    --bs-text-opacity: 90% !important;
+}
+
+.logo-img:hover {
+    transform: scale(1.1);
+    transition: 0.3s ease-in-out;
+}
+
+#modalImage {
+    cursor: zoom-in;
+}
+
+.btn.disabled, .btn:disabled, fieldset:disabled .btn {
+    color: gray;
+    border-color: gray;
+}
+
+.sticky-table-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+}
+
+#toast-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1050;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Toast Message */
+.toast-message {
+    min-width: 250px;
+    padding: 12px 20px;
+    color: white;
+    font-size: 14px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Change background color, text color, and font weight */
+tr.group {
+    background-color: #f0f0f0 !important; /* Light gray */
+    color: #333; /* Dark gray text */
+    font-weight: bold;
+}
+
+    /* Optional: Add a border or padding for better visibility */
+    tr.group td {
+        padding: 10px;
+        border-top: 2px solid #ccc;
+    }
+
+.title {
+    font: 10pt Arial !important;
+}
+
+h2 {
+    font: 12pt Arial !important;
+    font-weight: bold;
+    color: #6E9EAF !important;
+}
+
+
+.btn-primary {
+    font-size: 9pt !important;
+}
+
+#showActiveOnly {
+    font-size: 9pt !important; /* checkbox itself */
+}
+
+    #showActiveOnly:checked + label {
+        font-size: 9pt !important; /* won’t work in your case – label wraps input */
+    }
+
+/* Better: Style the label that contains the checkbox */
+label:has(#showActiveOnly) {
+    font-size: 9pt !important;
+}
+
+.row label {
+    font-size: 9pt !important;
+}
+
+/* Or more specific: */
+.row.mb-1 label {
+    font-size: 9pt !important;
+}
+
+.row.mb-1 .col-md-8 input.form-control {
+    font-size: 9pt !important;
+}
+
+.nav-link {
+    font-size: 9pt !important;
+}
+
+.text-uppercase {
+    text-transform: uppercase;
+}
+
+.search-box {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+    border-radius: 3px;
+}
+
+.bg-box {
+    --bs-bg-opacity: 1;
+    background-color: rgba(33, 37, 41, 0.03) !important;
+}
+
+.w-80 {
+    width: 80% !important;
+}
+
+.w-20 {
+    width: 20% !important;
+}
+
+h5, .h5 {
+    font-size: 9pt !important;
+}
+
+h4, .h4 {
+    font-size: 10pt !important;
+}

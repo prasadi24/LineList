@@ -1,0 +1,34 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="mt-4">
+    <div class="row">
+        <div class="col-xxl">
+            <div class="card mb-4">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h5 class="mb-0">Welcome to LineList Application</h5>
+
+                </div>
+                <hr />
+                <div class="card-body">
+
+<div id="AboutDialogContainer" style="text-align: center" title="About">
+    @* <img src="https://mc-95523900-b89e-4513-a7cd-2165-cdn-endpoint.azureedge.net/-/media/Project/WWW/Images/Brand/Cenovus-logo.svg?iar=0&amp;rev=82570005e0574489ac4907fd58fbb93f&amp;hash=978FB6CA2A7572EA5858E9269CF9AAF6" alt="eShutdown Keys" /> *@
+    <br /><b>
+        @ViewData["SiteVersion"] <br />
+        @ViewData["SiteReleaseDate"]
+    </b><br /><br />
+ @*    @ViewData["SiteCopyRight"]<br /> *@
+</div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts
+{
+   
+}
+

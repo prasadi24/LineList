@@ -1,0 +1,316 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model EPProjectViewModel
+
+<form asp-action="Create" id="epProjectForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#project-details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                @if (!(bool)ViewData["IsReadOnly"])
+                {
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#role-details" type="button" role="tab">
+                            Roles
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#insulation-details" type="button" role="tab">
+                            Insulation Table Defaults
+                        </button>
+                    </li>
+                }
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Project Details Tab -->
+                <div class="tab-pane fade show active" id="project-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">EP:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="EpProjectAdd.EpCompanyId" id="EpCompanyId" disabled="@Model.CanChangeEp" class="form-control">
+                                <option value="">-- Select EP Company --</option>
+                                @foreach (var item in Model.EpCompanies)
+                                {
+                                    <option value="@item.Id" selected="@(item.Id == Model.EpProjectAdd.EpCompanyId ? "selected" : null)">@item.Name - @item.Description</option>
+                                }
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <span asp-validation-for="EpProjectAdd.EpCompanyId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Facility:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="EpProjectAdd.FacilityId" id="FacilityId" class="form-control">
+                                <option value="">-- Select Facility --</option>
+                                @foreach (var item in Model.Facilities)
+                                {
+                                    <option value="@item.Id">@item.Name - @item.Description</option>
+                                }
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <span asp-validation-for="EpProjectAdd.FacilityId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Project Type:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="EpProjectAdd.ProjectTypeId" class="form-control">
+                                <option value="">-- Select Project Type --</option>
+                                @foreach (var type in Model.ProjectTypes)
+                                {
+                                    <option value="@type.Id" selected="@(type.Id == Model.EpProjectAdd.ProjectTypeId ? "selected" : null)">@type.Name</option>
+                                }
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <span asp-validation-for="EpProjectAdd.ProjectTypeId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label asp-for="EpProjectAdd.Name" class="col-md-4 text-black">Project Number:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="EpProjectAdd.Name" class="form-control text-uppercase flex-grow-1" style="max-width: calc(100% - 20px);" />
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <span asp-validation-for="EpProjectAdd.Name" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label asp-for="EpProjectAdd.Description" class="col-md-4 text-black">Project Description:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="EpProjectAdd.Description" class="form-control flex-grow-1" style="max-width: calc(100% - 20px);" />
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="col-md-8 offset-md-4">
+                            <span asp-validation-for="EpProjectAdd.Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Insulation Tables:</label>
+                        <div class="col-md-8">
+                            <select asp-for="EpProjectAdd.CopyInsulationTableDefaultsEpProjectId" id="InsulationTableDefaultsDropdown" class="form-control">
+                                <option value="">-- Cenovus Insulation Table Defaults --</option>
+                                @foreach (var item in Model.InsulationDefaultsValues)
+                                {
+                                    <option value="@item.Key">@item.Value</option>
+                                }
+                            </select>
+                            <span asp-validation-for="EpProjectAdd.CopyInsulationTableDefaultsEpProjectId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="role-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <div class="mt-md-0">
+                            <div class="row">
+                                <div class="card mb-md-1">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            @if (Model.CanAddRole)
+                                            {
+                                                <span data-toggle="tooltip" data-placement="right" title="Please save this Project before adding users to roles.">
+                                                <button class="btn btn-primary" disabled id="btnAddProjectRole">
+                                                    <i class="fas fa-plus"></i> ADD NEW PROJECT ROLE
+                                                </button>
+                                                </span>
+                                            }
+                                            <span data-toggle="tooltip" data-placement="right" title="No data to export.">
+                                            <button id="exportRoles" disabled class="btn btn-primary">
+                                                <i class="fas fa-file-excel"></i> EXPORT TO EXCEL
+                                            </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <table id="roleTable" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Actions</th>
+                                                    <th>@Html.DisplayNameFor(model => model.EpProjectUserRoles.First().UserName)</th>
+                                                    <th>Project Role</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in Model.EpProjectUserRoles)
+                                                {
+                                                    <tr data-id="@item.Id">
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary btn-edit" data-id="@item.Id">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-danger btn-delete" data-id="@item.Id">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>@item.UserName</td>
+                                                        <td>@item.EpProjectRole.Description</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role Modal -->
+                        <div class="modal fade" id="roleModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title page-header"></h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body" id="modalRoleContent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade" id="insulation-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <div class="mt-md-0">
+                            <div class="row">
+                                <div class="card mb-md-1">
+                                    <div class="card-header">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span data-toggle="tooltip" data-placement="right" title="No Active Records to Show">
+                                            <label class="me-3">
+                                                <input type="checkbox" disabled id="showActiveOnlyInsulatoin" checked class="form-check-input activeShowInsulation" />
+                                                ONLY SHOW ACTIVE
+                                            </label>
+                                            </span>
+                                            <span data-toggle="tooltip" data-placement="right" title="No data to export.">
+                                            <button id="exportInsulation" disabled class="btn btn-primary">
+                                                <i class="fas fa-file-excel"></i> EXPORT TO EXCEL
+                                            </button>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <table id="insulationTable" class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Actions</th>
+                                                    <th>@Html.DisplayNameFor(model => model.InsulationDefaults.First().Name)</th>
+                                                    <th>@Html.DisplayNameFor(model => model.InsulationDefaults.First().Description)</th>
+                                                    <th>@Html.DisplayNameFor(model => model.InsulationDefaults.First().LinkToDocument)</th>
+                                                    <th>@Html.DisplayNameFor(model => model.InsulationDefaults.First().IsActive)</th>
+                                                    <th>@Html.DisplayNameFor(model => model.InsulationDefaults.First().SortOrder)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @*  @foreach (var item in Model.InsulationDefaults)
+                                                {
+                                                    <tr data-id="@item.Id">
+                                                        <td>
+                                                            <button class="btn btn-sm btn-outline-primary btn-edit" data-id="@item.Id">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>@item.Name</td>
+                                                        <td>@item.Description</td>
+                                                        <td>@item.LinkToDocument</td>
+                                                        <td>@item.IsActive</td>
+                                                        <td>@item.SortOrder</td>
+                                                    </tr>
+                                                } *@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Role Modal -->
+                        <div class="modal fade" id="roleModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title page-header"></h5>
+                                        <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                                    </div>
+                                    <div class="modal-body" id="modalRoleContent"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                    @* <div class="row mb-1">
+                        <label class="col-md-4 text-black">Record Id:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectAdd.Id" class="form-control-plaintext" readonly />
+                        </div>
+                    </div> *@
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectAdd.CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectAdd.CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectAdd.ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="EpProjectAdd.ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="EpProjectAdd.IsActive" class="col-md-4 text-black">Active:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="EpProjectAdd.IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                    </div>
+                </div> <!-- End Audit Info Tab -->
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <div id="epAlphaValidationMsg" class="text-danger mt-2" style="display:none;">
+            No EP assigned: The selected facility does not have an EP assigned.
+        </div>
+        @if (Model.CanSave)
+        {
+            <button type="submit" class="btn btn-primary" id="btnSaveEpProject">Save</button>
+        }
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>

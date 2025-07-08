@@ -1,0 +1,105 @@
+﻿@* @model LineList.Cenovus.Com.Domain.Models.LdtImport *@
+
+@* <div class="container-fluid"> *@
+@*     <h2>Validate Import</h2> *@
+@*     <h4>File: @Model.OriginalFileName</h4> *@
+
+@*     <div class="row mt-3"> *@
+@*         <div class="col"> *@
+@*             <div class="card"> *@
+@*                 <div class="card-header"> *@
+@*                     <h3 class="card-title">Validation Results</h3> *@
+@*                 </div> *@
+@*                 <div class="card-body"> *@
+@*                     @foreach (var sheet in Model.ImportSheets) *@
+@*                     { *@
+@*                         <div class="card mb-3"> *@
+@*                             <div class="card-header"> *@
+@*                                 <h5 class="mb-0"> *@
+@*                                     Sheet: @sheet.Name *@
+@*                                     <span class="badge bg-primary float-end">@sheet.NumberOfRows Rows</span> *@
+@*                                 </h5> *@
+@*                             </div> *@
+@*                             <div class="card-body"> *@
+@*                                 <div class="row"> *@
+@*                                     <div class="col-md-3"> *@
+@*                                         <div class="info-box bg-success"> *@
+@*                                             <div class="info-box-content"> *@
+@*                                                 <span class="info-box-text">Accepted Rows</span> *@
+@*                                                 <span class="info-box-number">@sheet.NumberOfAccepted</span> *@
+@*                                             </div> *@
+@*                                         </div> *@
+@*                                     </div> *@
+@*                                     <div class="col-md-3"> *@
+@*                                         <div class="info-box bg-danger"> *@
+@*                                             <div class="info-box-content"> *@
+@*                                                 <span class="info-box-text">Exceptions</span> *@
+@*                                                 <span class="info-box-number">@sheet.NumberOfExceptions</span> *@
+@*                                             </div> *@
+@*                                         </div> *@
+@*                                     </div> *@
+@*                                 </div> *@
+
+@*                                 @if (sheet.NumberOfExceptions > 0) *@
+@*                                 { *@
+@*                                     <div class="table-responsive mt-3"> *@
+@*                                         <table class="table table-striped table-hover"> *@
+@*                                             <thead> *@
+@*                                                 <tr> *@
+@*                                                     <th>Row</th> *@
+@*                                                     <th>Field</th> *@
+@*                                                     <th>Value</th> *@
+@*                                                     <th>Message</th> *@
+@*                                                 </tr> *@
+@*                                             </thead> *@
+@*                                             <tbody> *@
+@*                                                 @foreach (var row in sheet.ImportRows.Where(r => !r.IsAccepted)) *@
+@*                                                 { *@
+@*                                                     @foreach (var exception in row.Exceptions) *@
+@*                                                     { *@
+@*                                                         <tr> *@
+@*                                                             <td>@row.RowNumber</td> *@
+@*                                                             <td>@exception.FieldName</td> *@
+@*                                                             <td>@exception.Value</td> *@
+@*                                                             <td>@exception.Message</td> *@
+@*                                                         </tr> *@
+@*                                                     } *@
+@*                                                 } *@
+@*                                             </tbody> *@
+@*                                         </table> *@
+@*                                     </div> *@
+@*                                 } *@
+@*                             </div> *@
+@*                         </div> *@
+@*                     } *@
+@*                 </div> *@
+@*                 <div class="card-footer"> *@
+@*                     <div class="btn-group"> *@
+@*                         @if (Model.ImportSheets.All(s => s.NumberOfAccepted > 0)) *@
+@*                         { *@
+@*                             <form asp-action="Process" asp-route-id="@Model.Id" method="post" style="display: inline;"> *@
+@*                                 @Html.AntiForgeryToken() *@
+@*                                 <button type="submit" class="btn btn-success"> *@
+@*                                     <i class="fas fa-play-circle"></i> Process Import *@
+@*                                 </button> *@
+@*                             </form> *@
+@*                         } *@
+@*                         <a asp-action="Index" class="btn btn-secondary"> *@
+@*                             <i class="fas fa-arrow-left"></i> Back to List *@
+@*                         </a> *@
+@*                     </div> *@
+@*                 </div> *@
+@*             </div> *@
+@*         </div> *@
+@*     </div> *@
+@* </div> *@
+
+@* @section Scripts { *@
+@*     <script> *@
+@*         $(document).ready(function () { *@
+@*             $('.table').DataTable({ *@
+@*                 order: [[0, 'asc']] *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@

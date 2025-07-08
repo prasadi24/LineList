@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="RepositoryInterfaces\ICategoryRepository.cs" />
+    <Compile Remove="RepositoryInterfaces\ILineDesignationTableViewRevisionRepository.cs" />
+    <Compile Remove="RepositoryInterfaces\ISubCategoryRepository.cs" />
+    <Compile Remove="ServiceInterfaces\ICategoryService.cs" />
+    <Compile Remove="ServiceInterfaces\ILineDesignationTableViewRevisionService.cs" />
+    <Compile Remove="ServiceInterfaces\ISubCategoryService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain\LineList.Cenovus.Com.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

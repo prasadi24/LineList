@@ -1,0 +1,115 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model InsulationDefaultDetailsEditViewModel
+
+<form asp-action="Update" id="InsulationDetailsForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#facility-details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                         Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Facility Details Tab -->
+                <div class="tab-pane fade show active" id="facility-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label asp-for="MinOperatingTemperature" class="col-md-4 text-black">Minimum Operating Temperature:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="MinOperatingTemperature" class="form-control flex-grow-1" readonly style="max-width: calc(100% - 20px);" maxlength="20" />
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="MinOperatingTemperature" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="MaxOperatingTemperature" class="col-md-4 text-black">Maximum Operating Temperature:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="MaxOperatingTemperature" class="form-control flex-grow-1" readonly style="max-width: calc(100% - 20px);" maxlength="60" />
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="MaxOperatingTemperature" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="SizeNpsId" class="col-md-4 text-black">Size NPS:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="SizeNpsId" class="form-select flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(Model.SizeNps_s, "Id", "Name"))" disabled>
+                                <option value="">-- Select Location --</option>
+                            </select>
+                            <input type="hidden" asp-for="SizeNpsId" />
+                        </div>                    
+                    </div>
+                  
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Insulation Thickness:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="InsulationThicknessId" class="form-select flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(Model.insulationThicknesses, "Id", "Name"))">
+                                <option value="">-- Select Insulation Thickness --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                            <input type="hidden" asp-for="InsulationThicknessId" />
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="InsulationThicknessId" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Record Id:</label>
+                        <div class="col-md-8">
+                            <input asp-for="Id" class="form-control-plaintext" readonly />
+                             <input asp-for="InsulationDefaultRowId" class="form-control-plaintext" type="hidden" />
+                             <input asp-for="InsulationDefaultColumnId" class="form-control-plaintext" type="hidden" />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>                   
+                </div> <!-- End Audit Info Tab -->
+            </div> <!-- End Tab Content -->
+        </div>
+        <div class="message red text-danger" id="validationMsgUnique" style="margin: 0px; visibility: hidden; display: none;">
+            <span><b>Duplicate Name</b>: The value entered in the name field already exists!</span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-delete-ins-details"  data-id="@Model.Id" id="btnDeleteInsDetail">Delete</button>
+        <button type="submit" class="btn btn-primary" id="btnInsDetailSave">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>

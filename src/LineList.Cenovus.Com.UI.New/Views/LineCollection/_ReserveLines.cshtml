@@ -1,0 +1,103 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model ReserveLinesViewModel
+
+<div class="modal-content">
+    <div class="modal-header">
+        <h5 class="modal-title">Reserve Lines</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <h6>For Document: @Model.DocumentNumber Rev @Model.DocumentRevision</h6>
+        <h6>Status: @Model.LineListStatusName</h6>
+        <form id="reserveLinesForm" asp-action="ReserveNewLines" asp-controller="LineCollection" method="post">
+            @Html.AntiForgeryToken()
+            <input type="hidden" asp-for="LineListRevisionId" />
+            <input type="hidden" asp-for="DocumentNumber" />
+            <input type="hidden" asp-for="DocumentRevision" />
+            <input type="hidden" asp-for="LineListStatusName" />
+            <input type="hidden" asp-for="OverrideSequence" id="hiddenOverride" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label">Specification:</label>
+                    <input type="text" class="form-control" value="@Model.SpecificationName" readonly />
+                    <input type="hidden" asp-for="SpecificationId" />
+                    <input type="hidden" asp-for="SpecificationName" />
+                </div>
+                @* <div class="col-md-6"> *@
+                @*     <label asp-for="LocationId" class="form-label">Location:</label> *@
+                @*     <select asp-for="LocationId" class="form-select" asp-items="@(new SelectList(Model.Locations, "Id", "Name"))"> *@
+                @*         <option value="">-- Select --</option> *@
+                @*     </select> *@
+                @*     <span asp-validation-for="LocationId" class="text-danger"></span> *@
+                @*     <img src="/gfx/bullet_red.png" title="Required Field" alt="[*]" /> *@
+                @* </div> *@
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="me-2 fw-bold w-50">Location:</label>
+                    <select id="locationDropdown" asp-for="LocationId" class="me-4 form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var location in Model.Locations)
+                        {
+                            <option value="@location.Id">@location.Name- @location.Description</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                @* <div class="col-md-6"> *@
+                @*     <label asp-for="CommodityId" class="form-label">Commodity:</label> *@
+                @*     <select asp-for="CommodityId" class="form-select" asp-items="@(new SelectList(Model.Commodities, "Id", "Name"))"> *@
+                @*         <option value="">-- Select --</option> *@
+                @*     </select> *@
+                @*     <span asp-validation-for="CommodityId" class="text-danger"></span> *@
+                @*     <img src="/gfx/bullet_red.png" title="Required Field" alt="[*]" /> *@
+                @* </div> *@
+                <div class="col-md-4 d-flex align-items-center">
+                    <label class="me-2 fw-bold w-50">Commodity:</label>
+                    <select id="commodityDropdown" asp-for="CommodityId" class="me-4 form-select">
+                        <option value="">-- Select --</option>
+                        @foreach (var commodity in Model.Commodities)
+                        {
+                            <option value="@commodity.Id">@commodity.Name - @commodity.Description</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="StartingLineSequence" class="form-label">Starting Line Sequence:</label>
+                    <input asp-for="StartingLineSequence" class="form-control" type="number" min="1" max="9999" />
+                    <span asp-validation-for="StartingLineSequence" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="NumberOfLines" class="form-label">Number of Lines:</label>
+                    <div class="input-group">
+                        <input asp-for="NumberOfLines" class="form-control" type="number" min="1" max="9999" />
+                        <div class="input-group-text">
+                            <input type="checkbox" asp-for="Contiguous" id="contiguousCheck" />
+                            <label for="contiguousCheck" class="ms-1">Contiguous</label>
+                        </div>
+                    </div>
+                    <span asp-validation-for="NumberOfLines" class="text-danger"></span>
+                    @* <img src="/gfx/bullet_red.png" title="Required Field" alt="[*]" /> *@
+                </div>
+            </div>
+
+            <div class="message orange" id="validationMsg" style="display: none;">
+                <span><b>Required Field</b>: Location, Commodity, and Number of Lines are required.</span>
+            </div>
+            <div class="message orange" id="validationMsgRange" style="display: none;">
+                <span><b>Number Range</b>: The line sequence numbers cannot exceed 9999.</span>
+            </div>
+            <div class="message red" id="validationMsgExists" style="display: none;">
+                <span><b>Number Overlap</b>: The line sequence numbers requested already exist. To proceed with the lowest available sequence number that can fulfill your requirement, please click 'Reserve' again.</span>
+            </div>
+
+            <div class="d-flex justify-content-start mt-3">
+                <button type="submit" class="btn btn-success me-2">Reserve</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+

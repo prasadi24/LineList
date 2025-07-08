@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="CategoryRepository.cs" />
+    <Compile Remove="LineDesignationTableViewRevisionRepository.cs" />
+    <Compile Remove="SubCategoryRepository.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" Version="0.105.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain.Interfaces\LineList.Cenovus.Com.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain\LineList.Cenovus.Com.Domain.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Infrastructure\LineList.Cenovus.Com.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

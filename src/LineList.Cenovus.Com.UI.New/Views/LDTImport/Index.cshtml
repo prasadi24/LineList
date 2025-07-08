@@ -1,0 +1,244 @@
+﻿@model IEnumerable<LineList.Cenovus.Com.Domain.Models.Import>
+@using LineList.Cenovus.Com.Domain.Models
+@inject LineList.Cenovus.Com.Security.CurrentUser CurrentUser
+
+@{
+    Layout = "~/Views/Shared/_LayoutFull.cshtml";
+    var facilities = ViewBag.Facilities as List<string> ?? new List<string>();
+    var facilitiesValue = facilities.Any() ? string.Join("|", facilities) : "";
+}
+
+<h2>Select a file to import</h2>
+<p>Please ensure that the Excel file is unprotected, as protected or password-encrypted sheets will cause errors.</p>
+
+<input type="hidden" id="facilities" value="@facilitiesValue" />
+
+<div class="mb-3">
+    <input type="file" id="fileUpload" accept=".xls" class="form-control" />
+    <button id="uploadButton" class="btn btn-primary mt-2">Upload</button>
+</div>
+
+<h2>Previously uploaded files</h2>
+<div class="table">
+    <table id="dataTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th><button id="toggleFilters" class="btn-primary custom-icon-hover"><i class="fas fa-search"></i></button> File Name</th>
+                <th>Facility</th>
+                <th>Created On</th>
+                <th>Created By</th>
+                <th>Modified On</th>
+                <th>Modified By</th>
+                <th>Status</th>
+                <th>Details</th>
+                <th>Actions</th>
+            </tr>
+            <tr id="searchInputs" class="filter-row">
+                <th></th> <!-- File Name search -->
+                <th><input type="text" class="form-control" placeholder="Facility" /></th>
+                <th><input type="text" class="form-control" placeholder="Created On" /></th>
+                <th><input type="text" class="form-control" placeholder="Created By" /></th>
+                <th><input type="text" class="form-control" placeholder="Modified On" /></th>
+                <th><input type="text" class="form-control" placeholder="Modified By" /></th>
+                <th><input type="text" class="form-control" placeholder="Status" /></th>
+                <th></th> <!-- Details column (no search) -->
+                <th></th> <!-- Actions column (no search) -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var import in Model ?? Enumerable.Empty<Import>())
+            {
+                <tr>
+                    <td>@import.OriginalFileName</td>
+                    <td>@import.FacilityName</td>
+                    <td>@import.CreatedOn.ToString("g")</td>
+                    <td>@import.CreatedBy</td>
+                    <td>@import.ModifiedOn.ToString("g")</td>
+                    <td>@import.ModifiedBy</td>
+                    <td>@import.Status</td>
+                    <td>
+                        <a href="@Url.Action("Summary", "LDTImport", new { id = import.Id }, null)" class="btn btn-info btn-sm">Details</a>
+                    </td>
+                    <td>
+                        <a href="#" class="delete-link btn btn-danger btn-sm" data-id="@import.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <button id="cleanDatabaseButton" class="btn btn-warning">Clean Database</button>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        /* Ensure the page can grow and scroll */
+        html, body {
+            height: 100%;
+            overflow: auto;
+        }
+
+        main {
+            min-height: 100vh;
+            overflow: auto;
+        }
+
+        .table-responsive {
+            overflow: visible !important; /* Allow the table to contribute to page height */
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            initializeDataTable();
+        });
+
+        // Hide the search toggle in DataTable
+        $('.filter-row').hide();
+
+        // Toggle filter button click
+        $('#toggleFilters').click(function () {
+            $('.filter-row').toggle();
+        });
+
+        function initializeDataTable() {
+            // let tableHeight = window.innerHeight - 150; Adjust based on UI header/footer
+            let tableHeight = 400;
+            window.table = $('#dataTable').DataTable({
+                dom: 'Brtlip',
+                orderCellsTop: true,
+                order: [[0, 'asc']],  // Order by File Name
+                scrollY: tableHeight + 'px',
+                // scrollY: '53vh',      Same vertical scroll height as Line List Page
+                scrollX: true,        // Enable horizontal scrolling
+                scrollCollapse: true, // Adjust height if content is smaller
+                paging: false,        // Disable pagination
+                autoWidth: false,     // Disable auto width calculation
+                responsive: false,    // Disable responsive behavior
+                fixedHeader: true,    // Keep header fixed while scrolling
+                select: { style: 'single' },         // Enable row selection
+                buttons: [],          // No export buttons needed for LDT Import
+                columnDefs: [
+                    { targets: [7, 8], orderable: false, searchable: false } // Disable sorting/searching on Details and Actions columns
+                ],
+                initComplete: function () {
+                    let table = this;
+                    this.api().columns().every(function (index) {
+                        if (index === 7 || index === 8) return; // Skip Details and Actions columns
+                        $('input', $('#searchInputs th').eq(index)).on('keyup change', function () {
+                            table.api().column(index).search(this.value).draw();
+                        });
+                    });
+                }
+            });
+        }
+
+        function validateFileName(fileName) {
+            var segments = fileName.split('\\');
+            fileName = segments[segments.length - 1];
+            var facilityList = $("#facilities").val().split("|");
+
+            if (fileName.includes("Import Template")) {
+                var parts = fileName.split("-");
+                var fcName = parts[parts.length - 1].split(".")[0].trim();
+                return facilityList.includes(fcName);
+            } else {
+                var prefix = fileName.split("-")[0];
+                return facilityList.includes(prefix);
+            }
+        }
+
+        $("#uploadButton").click(function () {
+            var fileInput = $("#fileUpload")[0];
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+
+            var fileName = fileInput.files[0].name;
+            if (!validateFileName(fileName)) {
+                alert("Data Import filename must begin with a valid Facility Name in the Lookup tables, e.g. 'Superlist - CL.xls' for Christina Lake Facility.");
+                return;
+            }
+
+            var formData = new FormData();
+            formData.append("file", fileInput.files[0]);
+
+            $("#loadingModal").modal("show");
+
+            $.ajax({
+                url: "@Url.Action("Upload")",
+                type: "POST",
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    $("#loadingModal").modal("hide");
+                    if (response.success) {
+                        location.reload();
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function () {
+                    $("#loadingModal").modal("hide");
+                    alert("An error occurred while uploading the file.");
+                }
+            });
+        });
+
+        $(".delete-link").click(function (e) {
+            e.preventDefault();
+            if (!confirm("Are you sure you want to delete this import?")) {
+                return;
+            }
+
+            var importId = $(this).data("id");
+            $("#loadingModal").modal("show");
+
+            $.ajax({
+                url: "@Url.Action("Delete")",
+                type: "POST",
+                data: { id: importId },
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    $("#loadingModal").modal("hide");
+                    alert("An error occurred while deleting the import.");
+                }
+            });
+        });
+
+        $("#cleanDatabaseButton").click(function () {
+            if (!confirm("Are you sure you want to clean the database? This will delete all imports, linelists, and lines. This is irreversible!")) {
+                return;
+            }
+
+            $("#loadingModal").modal("show");
+
+            $.ajax({
+                url: "@Url.Action("CleanDatabase")",
+                type: "POST",
+                success: function () {
+                    location.reload();
+                },
+                error: function () {
+                    $("#loadingModal").modal("hide");
+                    alert("An error occurred while cleaning the database.");
+                }
+            });
+        });
+    </script>
+}

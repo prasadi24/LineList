@@ -1,0 +1,185 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.PipeSpecification
+@model PipeSpecificationAddDto
+
+<form asp-action="Create" id="pipeSpecificationForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#pipe-specification-details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Pipe Specification Details Tab -->
+                <div class="tab-pane fade show active" id="pipe-specification-details" role="tabpanel">
+                    <!-- Name -->
+                    <div class="row mb-1">
+                        <label asp-for="Name" class="col-md-4 text-black">Name:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="Name" class="form-control text-uppercase flex-grow-1" style="max-width: calc(100% - 20px);" maxlength="20"/>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="row mb-1">
+                        <label asp-for="Description" class="col-md-4 text-black">Description:</label>
+                        <div class="col-md-8">
+                            <input asp-for="Description" class="form-control"  maxlength="60" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Notes -->
+                    <div class="row mb-1">
+                        <label asp-for="Notes" class="col-md-4 text-black">Notes:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- 2x2 Grid + Label -->
+                    <div class="row">
+                        <!-- Left column: 4 fields in 2x2 -->
+                        <div class="col-md-8">
+                            <div class="row mb-1">
+                                <label class="col-md-6 text-black">Specification:</label>
+                                <div class="col-md-6 d-flex align-items-center">
+                                    <select asp-for="SpecificationId" class="form-select" asp-items="@(new SelectList(ViewBag.Specifications, "Id", "Name_dash_Description"))">
+                                        <option value="">-- Select Specification --</option>
+                                    </select>                                  
+                                    <span class="text-danger ms-1">*</span>
+                                   
+                                </div>
+                                <div class="col-md-6 offset-md-6">
+                                    <span asp-validation-for="SpecificationId" class="text-danger"></span>
+                                </div>
+                                
+                            </div>
+                            <div class="row mb-1">
+                                <label class="col-md-6 text-black">Corrosion Allowance Default:</label>
+                                <div class="col-md-6">
+                                    <select asp-for="CorrosionAllowanceId" class="form-select" asp-items="@(new SelectList(ViewBag.CorrosionAllownaces, "Id", "Name"))">
+                                        <option value="">-- Select Corrosion Allowance --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <label class="col-md-6 text-black">NDE Category Default:</label>
+                                <div class="col-md-6">
+                                    <select asp-for="NdeCategoryId" class="form-select" asp-items="@(new SelectList(ViewBag.NdeCategaries, "Id", "Name"))">
+                                        <option value="">-- Select NDE Category --</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <label class="col-md-6 text-black">X-Ray Default:</label>
+                                <div class="col-md-6">
+                                    <select asp-for="XrayId" class="form-select" asp-items="@(new SelectList(ViewBag.Xrays, "Id", "Name_dash_Description"))">
+                                        <option value="">-- Select X-Ray --</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 d-flex align-items-center h-100" style="margin-top: 30px;">
+                            <div class="alert alert-light p-2 fw-bold">
+                                <strong>
+                                    Make sure Default values are filled out based on<br />
+                                    the corresponding Pipe Specification datasheet on CPW.
+                                    EP mechanical defaulting capabilities depend on the completeness of this information.
+                                </strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Specification Revision -->
+                    <div class="row mb-1">
+                        <label asp-for="RevisionNumber" class="col-md-4 text-black">Specification Revision:</label>
+                        <div class="col-md-8">
+                            <input asp-for="RevisionNumber" type="number" min="0" class="form-control" />
+                            <span asp-validation-for="RevisionNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Revision Date -->
+                    <div class="row mb-1">
+                        <label asp-for="RevisionDate" class="col-md-4 text-black">Spec. Revision Date:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="RevisionDate" class="form-control flex-grow-1" type="date" asp-format="{0:yyyy-MM-dd}" value="" style="max-width: calc(100% - 20px);" />
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="RevisionDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="IsActive" class="col-md-4 text-black">Active:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="IsActive" type="checkbox" checked class="form-check-input" />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="SortOrder" class="col-md-4 text-black">Sort Order:</label>
+                        <div class="col-md-8">
+                            <input asp-for="SortOrder" class="form-control" type="number" min="0" oninput="this.value = this.value < 0 ? 0 : this.value" onblur="if (this.value === '') { this.value = 0; $(this).valid(); }" />
+                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div> <!-- End Audit Info Tab -->
+            </div> <!-- End Tab Content -->
+        </div>
+        <div class="message red text-danger" id="validationMsgUnique" style="margin: 0px; visibility: hidden;
+        display: none;">
+            <span><b>Duplicate Name</b>: The value entered in the name field already exists!</span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnSavePipeSpecification">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>

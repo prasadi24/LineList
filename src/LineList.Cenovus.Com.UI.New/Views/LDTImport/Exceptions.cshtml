@@ -1,0 +1,87 @@
+﻿@model LineList.Cenovus.Com.API.DataTransferObjects.ImportSheet.ImportSheetResultDto
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportRow
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportRowException
+@using System.Reflection
+
+<h2>Exceptions for Sheet: @Model.Name</h2>
+
+<div class="mb-3">
+    <button class="btn btn-primary export-btn" data-id="@Model.Id">Export to Excel...</button>
+    <a href="@Url.Action("Summary", new { id = ViewBag.ImportId })" class="btn btn-secondary">Back to Summary</a>
+</div>
+
+<div style="overflow-x: auto;">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th style="position: sticky; left: 0; background: white;">Row Number</th>
+                <th style="position: sticky; left: 100px; background: white;">Exception Details</th>
+                @foreach (var column in Model.Columns)
+                {
+                    <th>@column.NameInExcel</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var row in Model.ImportRows)
+            {
+                @foreach (var exception in row.Exceptions)
+                {
+                    <tr>
+                        <td style="position: sticky; left: 0; background: white;">@row.RowNumber</td>
+                        <td style="position: sticky; left: 100px; background: white;">@exception.Message</td>
+                        @foreach (var column in Model.Columns)
+                        {
+                            var property = typeof(ImportRowResultDto).GetProperty(column.NameInDatabase);
+                            var value = property?.GetValue(row)?.ToString() ?? "";
+                            <td>@value</td>
+                        }
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(".export-btn").click(function () {
+            var id = $(this).data("id");
+            $("#loadingModal").modal("show");
+            $.ajax({
+                url: "@Url.Action("ExportExceptions", "LDTImport")",
+                type: "POST",
+                data: { importSheetId: id },
+                success: function (data, status, xhr) {
+                    $("#loadingModal").modal("hide");
+                    var blob = new Blob([data], { type: 'text/csv' });
+                    var url = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'exceptions.csv';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                },
+                error: function () {
+                    $("#loadingModal").modal("hide");
+                    alert("An error occurred while exporting the data.");
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                }
+            });
+        });
+    </script>
+}

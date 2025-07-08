@@ -1,0 +1,269 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.EpCompany
+@model IEnumerable<EpCompanyResultDto>
+
+<div class="mt-md-0">
+    <div class="row">
+        <div class="card mb-md-1">
+            <div class="card-header">
+                <h5 class="mb-3 page-header">EP Company Logos</h5>
+                <hr />
+                <div class="d-flex justify-content-end align-items-center">
+                    <label class="me-1">
+                        <input type="checkbox" id="showActiveOnly" checked class="form-check-input" data-toggle="tooltip" data-placement="right" title="Only Show Active Records" />
+                        ONLY SHOW ACTIVE
+                    </label>
+                </div>
+
+            </div>
+            <div class="table">
+                <table id="dataTable" class="table">
+                    <thead>
+                        <tr>
+                            <th><button id="toggleFilters" class="btn-primary custom-icon-hover"><i class="fas fa-search"></i></button> Actions</th>
+                            <th>@Html.DisplayNameFor(model => model.First().Name)</th>
+                            <th>@Html.DisplayNameFor(model => model.First().Description)</th>
+                            <th>@Html.DisplayNameFor(model => model.First().IsActive)</th>
+                            <th>@Html.DisplayNameFor(model => model.First().Logo)</th>
+                        </tr>
+                        <tr id="searchInputs" class="filter-row">
+                            <th></th>
+                            <th><input type="text" class="form-control" placeholder="EP Company Name" /></th>
+                            <th><input type="text" class="form-control" placeholder="EP Description" /></th>
+                            <th><input type="text" class="form-control" placeholder="Active" /></th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr data-id="@item.Id" data-active="@item.IsActive.ToString().ToLower()">
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary btn-remove" data-id="@item.Id" @(item.Logo == null || item.Logo.Length == 0 ? "disabled" : "") data-name="@item.Name" data-toggle="tooltip" data-placement="right" title="Remove EP Company Logo">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-primary btn-upload" data-id="@item.Id" data-name="@item.Name" data-toggle="tooltip" data-placement="right" title="Upload EP Company Logo">
+                                        <i class="fas fa-file-upload"></i>
+                                    </button>
+                                    @* <button class="btn btn-sm btn-outline-primary btn-replace" data-id="@item.Id" data-name="@item.Name" data-toggle="tooltip" data-placement="right" title="Replace EP Company Logo">
+                                        <i class="fa-solid fa-rotate"></i>
+                                    </button> *@
+                                </td>
+                                <td>@item.Name</td>
+                                <td>@item.Description</td>
+                                <td>@(item.IsActive ? "Yes" : "No")</td>
+                                <td>
+                                    @if (item.Logo != null && item.Logo.Length > 0)
+                                    {
+                                        var base64Image = item.Logo;
+                                        var imgSrc = $"data:image/png;base64,{base64Image}";
+                                        <img src="@imgSrc" alt="Company Logo" class="logo-img" data-bs-toggle="modal" data-bs-target="#imageModal" data-src="@imgSrc" style="width: 100px; height: 100px; object-fit: contain; cursor: pointer;" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="companyModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title page-header"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+</div>
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Company Logo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Company Logo" class="img-fluid rounded shadow-lg" style="max-width: 100%; height: auto;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Image Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title page-header" id="uploadModalLabel">Upload Company Logo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <hr />
+            <div class="modal-body">
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <input type="hidden" id="companyId" name="companyId">
+                    <div class="mb-3">
+                        <label for="companyLogo" class="form-label">Select an image</label>
+                        <input type="file" class="form-control" id="companyLogo" name="companyLogo" accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Upload</button>
+                </form>
+                <hr />
+                <span>
+                    <p class="form-label">Note: files will be stored in original format and automatically sized on the printed documents.</p>
+
+                    <p class="form-label">Supported file types: gif, jpg, jpeg, png</p>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+                initializeDataTable();table.on('draw', function () { updateMoveButtons(); });
+                if ($("#showActiveOnly").is(":checked")) {
+                    filterActiveRecords();
+                }
+        });
+
+         $('#showActiveOnly').on('change', function () {
+                filterActiveRecords();
+            });
+
+         $(document).on("click", ".btn-remove", function () {
+                let companyId = $(this).data("id");
+
+                if (!confirm('Are you sure you want to remove the logo for EP Company: ' +  $(this).data("name") + '?')) {
+                    return;
+                }
+
+                $.ajax({
+                    url: "/EPCompany/Delete/" + companyId,
+                    type: "DELETE",
+                    success: function (response) {
+                        if (response.success) {
+                             showToast("Logo removed successfully!", "success", function () {
+                                    setTimeout(() => {
+                                        location.reload();
+                                    }, 1000);
+                                });
+                            location.reload(); // Refresh the page to reflect changes
+                        } else {
+                            alert(response.errorMessage || "Failed to remove the logo.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error removing logo:", error);
+                        alert("An error occurred while removing the logo.");
+                    }
+                });
+            });
+        //hide the search toggle in datatable
+        $('.filter-row').hide();
+
+        //Toggle filter button click
+        $('#toggleFilters').click(function () {
+            $('.filter-row').toggle();
+        });
+
+        function filterActiveRecords() {
+            var showActiveOnly = $('#showActiveOnly').prop('checked');
+
+            if (showActiveOnly) {
+                    table.column(3).search("^Yes$", true, false).draw();
+                } else {
+                    table.column(3).search("").draw();
+                }
+            }
+
+        function initializeDataTable() {
+                let tableHeight = window.innerHeight - 150;
+
+                window.table = $('#dataTable').DataTable({
+                    dom: 'Brtlip',
+                    orderCellsTop: true,  order: [[1, 'asc']],
+                    scrollY: '58vh',
+                    scrollX: true,
+                    scrollCollapse: true,
+                    paging: false,
+                    autoWidth: false,
+                    responsive: true,
+                    fixedHeader: true,
+                    select: { style: 'single' },
+                    buttons: [{
+                        extend: 'excel',
+                        text: 'Export to Excel', title: null,filename: 'LookupTable',customize: customizeExcelExport,
+                        className: 'btn btn-primary export-button',
+                        exportOptions: {
+                            columns: ":not(:first-child)",
+                            modifier: {
+                                search: "applied",
+                                 order: "applied", selected: null
+                            }
+                        }
+                    }],
+                    columnDefs: [
+                        { targets: 0, orderable: false, searchable: false, width: '120px' },
+                        { targets: 1, width: '200px' },
+                        { targets: 2, width: '350px' },
+                        { targets: 3, width: '120px' },
+                        { targets: 4, orderable: false, searchable: false, width: '200px' }
+                    ],
+                    initComplete: function () {
+                        let table = this;
+                        this.api().columns().every(function (index) {
+                            if (index === 0) return;
+                            $('input', $('#searchInputs th').eq(index)).on('keyup change', function () {
+                                table.api().column(index).search(this.value).draw();
+                            });
+                        });
+                    }
+                });
+            }
+
+            $(document).on("click", ".logo-img", function () {
+                let imgSrc = $(this).attr("data-src"); // Get image source
+                $("#modalImage").attr("src", imgSrc); // Set the image in the modal
+            });
+
+            $(document).on("click", ".btn-upload", function () {
+                let companyId = $(this).data("id");
+                $("#companyId").val(companyId);  // Set hidden field value
+                $("#uploadModal").modal("show"); // Open the modal
+            });
+
+            // Handle form submission for image upload
+            $("#uploadForm").on("submit", function (e) {
+                e.preventDefault();
+                let formData = new FormData(this);
+
+                $.ajax({
+                    url: "/EPCompany/UploadLogo",
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (response) {
+                        if (response.success) {
+                            location.reload(); // Refresh page to show updated logo
+                        } else {
+                            alert(response.message || "Error uploading image.");
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Upload error:", error);
+                        alert("Failed to upload image.");
+                    }
+                });
+            });
+
+    </script>
+}

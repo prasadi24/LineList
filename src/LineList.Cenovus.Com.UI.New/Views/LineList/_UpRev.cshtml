@@ -1,0 +1,41 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model SearchLineListViewModel
+
+<div class="container">
+    <h1>Up-Rev: <span id="lblTitle">@Model.DocumentNumber</span></h1>
+    <table class="table table-bordered" style="margin-top: 8px;">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Last Issued Revision</th>
+                <th>Next Revision</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Status</strong></td>
+                <td><span id="lblLastIssuedStatus">@Model.LineListStatusName</span></td>
+                <td>
+                    <select id="cboNextStatus" class="form-control" asp-for="SelectedLineListStatusId">
+                        <option value="">-- Select --</option>
+                        @foreach (var status in Model.LineListStatuses)
+                        {
+                            <option value="@status.Id">@status.Name - @status.Description</option>
+                        }
+                    </select>
+                    <div id="cboNextStatusValidation" class="text-danger" style="display:none;">Please select a status.</div>
+                </td>
+            </tr>
+            <tr>
+                <td><strong>Revision</strong></td>
+                <td><span id="lblLastIssuedRevision">@Model.DocumentRevision</span></td>
+                <td><span id="lblNextRevision">@Model.NextRevision</span></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="text-end mt-3">
+        <button type="button" id="btnUpRevSave" class="btn btn-success">SAVE</button>
+        <button type="button" id="btnUpRevCancel" class="btn btn-secondary" data-bs-dismiss="modal">CANCEL</button>
+    </div>
+    <input type="hidden" id="hdnLineListRevisionId" value="@Model.LineListRevisionId" />
+</div>

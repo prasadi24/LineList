@@ -1,0 +1,56 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model EpCompanyFacilityAddViewModel
+
+<form asp-action="AddFacilityAccess" id="epAlphaForm" method="post">
+<div class="col-xl-12">
+    <div class="nav-align-top mb-4">
+
+        <!-- Tab Content -->
+        <div class="tab-content">
+
+            <div class="row mb-1">
+                <label class="col-md-4 text-black">EP:</label>
+                <div class="col-md-8 d-flex align-items-center">
+                        <select asp-for="EpCompanyId" id="EpCompanyId" readonly class="form-control">
+                        <option value="">-- Select EP Company --</option>
+                        @foreach (var item in Model.EpCompanies)
+                        {
+                                <option value="@item.Id" selected="@(item.Id == Model.EpCompanyId ? "selected" : null)">@item.Name - @item.Description</option>
+                        }
+                    </select>
+                    <span class="text-danger ms-1" title="Required Field">*</span>
+                </div>
+                <div class="col-md-8 offset-md-4">
+                        <span asp-validation-for="EpCompanyId" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="row mb-1">
+                <label class="col-md-4 text-black">Facility:</label>
+                <div class="col-md-8 d-flex align-items-center">
+                    <select asp-for="FacilityId" id="FacilityId" class="form-control">
+                        <option value="">-- Select Facility --</option>
+                        @foreach (var item in Model.Facilities)
+                        {
+                            <option value="@item.Id" selected="@(item.Id == Model.FacilityId ? "selected" : null)">@item.Name - @item.Description</option>
+                        }
+                    </select>
+                    <span class="text-danger ms-1" title="Required Field">*</span>
+                </div>
+                <div class="col-md-8 offset-md-4">
+                    <span asp-validation-for="FacilityId" class="text-danger"></span>
+                </div>
+            </div>
+                <div class="message red text-danger" id="validationMsgUnique" style="margin: 0px; visibility: hidden;display: none;">
+                    <span><b>Duplicate Name</b>: The value entered in the name field already exists!</span>
+                </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" id="btnAddFacility">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+</div>
+
+</form>

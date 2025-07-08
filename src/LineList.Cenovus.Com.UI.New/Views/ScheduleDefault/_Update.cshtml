@@ -1,0 +1,165 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.ScheduleDefault
+@model ScheduleDefaultEditDto
+
+<form asp-action="Update" id="scheduleDefaultForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#schedule-default-details" type="button" role="tab">
+                         Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Schedule Default Details Tab -->
+                <div class="tab-pane fade show active" id="schedule-default-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Spec:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="SpecificationId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.Specifications, "Id", "Name"))">
+                                <option value="">-- Select Specification --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="SpecificationId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Pipe Spec:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="PipeSpecificationId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.PipeSpecifications, "Id", "Name_dash_Description"))">
+                                <option value="">-- Select PipeSpecification --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="PipeSpecificationId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Size NPS:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="SizeNpsId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.SizeNps, "Id", "Name"))">
+                                <option value="">-- Select SizeNps --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="SizeNpsId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Schedule Default:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="ScheduleId"
+                                    class="form-control"
+                                    asp-items="@(new SelectList(ViewBag.Schdules, "Id", "Name"))">
+                                <option value="">-- Select Schedule --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="ScheduleId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="RevisionNumber" class="col-md-4 text-black">Revision Number:</label>
+                        <div class="col-md-8">
+                            <input asp-for="RevisionNumber" class="form-control" placeholder="1" />
+                            <span asp-validation-for="RevisionNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="RevisionDate" class="col-md-4 text-black">Revision Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="RevisionDate" class="form-control" type="date" asp-format="{0:yyyy-MM-dd}" />
+                            <span asp-validation-for="RevisionDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="Notes" class="col-md-4 text-black">Notes:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Record Id:</label>
+                        <div class="col-md-8">
+                            <input asp-for="Id" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="IsActive" class="col-md-4 text-black">Active:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="SortOrder" class="col-md-4 text-black">Sort Order:</label>
+                        <div class="col-md-8">
+                            <input asp-for="SortOrder"
+                                   class="form-control"
+                                   type="number"
+                                   min="0"
+                                   oninput="this.value = this.value < 0 ? 0 : this.value" onblur="if (this.value === '') { this.value = 0; $(this).valid(); }" />
+                            <span asp-validation-for="SortOrder" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div> <!-- End Audit Info Tab -->
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+         <button type="button" class="btn btn-danger btn-delete" data-id="@Model.Id" id="btnDelete">Delete</button>
+        <button type="submit" class="btn btn-primary" id="btnSaveScheduleDefault">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>

@@ -1,0 +1,435 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration Configuration
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Principal
+@{
+    var host = Context.Request.Host.Host.ToLower();
+    var isProduction = host == "linelist.cenovus.com";
+    var rawName = @User.Claims.Where(c => c.Type == "name").FirstOrDefault().Value;
+    var cleanedName = rawName.Contains(",") ? string.Join(" ", rawName.Split(',').Reverse().Select(s => s.Trim())) : rawName;
+    var initials = string.Join("", cleanedName.Split(' ', StringSplitOptions.RemoveEmptyEntries).Select(n => n[0])).ToUpper();
+    var cpwUrl = Configuration["ConfigKeys:BackToCpw"];
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+    <title>Cenovus Line List</title>
+
+    <!-- Bootstrap & jQuery UI -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/jquery-ui.css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/buttons.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/responsive.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/select.bootstrap.css" />
+
+    <!-- Third-party Plugins -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="~/css/toastr.min.css" />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap-duallistbox.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/footer.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/header.css" />
+    <link rel="stylesheet" href="~/css/core.css" />
+    <link rel="stylesheet" href="~/css/theme-default.css" />
+    <link rel="stylesheet" href="~/fonts/boxicons.css" />
+    <link rel="stylesheet" href="~/css/sidemenu.css" />
+
+    <!-- Core JS -->
+    <script src="~/js/jquery-3.7.1.js"></script>
+    <script src="~/js/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery Validation -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/dataTables.select.js"></script>
+    <script src="~/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="~/js/2.3.6/buttons.html5.min.js"></script>
+    <script src="~/js/2.3.6/buttons.print.min.js"></script>
+    <script src="~/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+
+    <!-- Toastr -->
+    <script src="~/js/toastr.min.js"></script>
+
+    <!-- Dual List Box -->
+    <script src="~/js/jquery.bootstrap-duallistbox.js"></script>
+
+    <!-- Toastr Configuration -->
+    <script>
+        toastr.options = {
+            closeButton: true,
+            debug: false,
+            newestOnTop: false,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            preventDuplicates: false,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "5000",
+            extendedTimeOut: "1000",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
+    </script>
+
+    <!-- App Scripts -->
+    <script>
+        $(document).ready(function () {
+            (function () {$('[data-toggle="tooltip"]').tooltip()});
+
+            $.validator.setDefaults({
+                ignore: [] 
+            });
+
+            $(window).on('resize', function () {
+                $.fn.dataTable.tables({visible: true, api: true}).columns.adjust();
+            });
+
+            const blockUiOptions = {
+                theme: true,
+                title: 'Loading...',
+                message: '<p><img src="../../img/ajax-loader.gif" class="ajax-loader" />Please wait while we fetch your data.</p>',
+                overlayCSS: {
+                    backgroundColor: '#000',
+                    opacity: 0.0
+                },
+                draggable: false
+            };
+
+            $(document).ajaxStart(() => $.blockUI(blockUiOptions));
+            $(document).ajaxStop(() => $.unblockUI());
+        });
+
+        function showToast(message, type = "info", callback = null) {
+            const bgColor = {
+                success: "bg-success",
+                error: "bg-danger",
+                warning: "bg-warning",
+                info: "bg-info"
+            }[type] || "bg-info";
+
+            let container = document.getElementById("toast-container");
+            if (!container) {
+                container = document.createElement("div");
+                container.id = "toast-container";
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement("div");
+            toast.className = `toast-message ${bgColor}`;
+            toast.innerHTML = `<span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = "0";
+                setTimeout(() => {
+                    toast.remove();
+                    if (callback) callback();
+                }, 500);
+            }, 3000);
+        }
+        function updateMoveButtons() {
+            $("#dataTable tbody tr").find(".btn-move-up, .btn-move-down").prop("disabled", false);
+            $("#dataTable tbody tr:first .btn-move-up").prop("disabled", true);
+            $("#dataTable tbody tr:last .btn-move-down").prop("disabled", true);
+        }
+
+        function updateTableRowPosition(button, direction) {
+            let currentRow = button.closest("tr");
+            let swapRow = direction === "up" ? currentRow.prev("tr") : currentRow.next("tr");
+            if (swapRow.length === 0) return;
+
+            let currentSortOrder = currentRow.find("td:nth-child(2)").text().trim();
+            let swapSortOrder = swapRow.find("td:nth-child(2)").text().trim();
+
+            currentRow.find("td:nth-child(2)").text(swapSortOrder);
+            swapRow.find("td:nth-child(2)").text(currentSortOrder);
+
+            if (direction === "up") currentRow.insertBefore(swapRow);
+            else currentRow.insertAfter(swapRow);
+        }
+
+        $(document).on("click", ".btn-move-up, .btn-move-down", function () {
+            let button = $(this);
+            let moveRequest = {
+                id: button.data("id"),
+                direction: button.hasClass("btn-move-up") ? "up" : "down"
+            };
+
+            let currentController = window.location.pathname.split("/")[1];
+            $.ajax({
+                url: `/${currentController}/MoveSortOrder`,
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(moveRequest),
+                success: function (response) {
+                    if (response.success) {
+                        updateTableRowPosition(button, moveRequest.direction);
+
+                        if(currentController.toLowerCase()==='epproject')
+                        {
+                        let direction= button.hasClass("btn-move-up") ? "up" : "down";
+                        let currentRow = button.closest("tr");
+                        const val = direction === "up"?(+currentRow.find("td:nth-child(6)").text()-10):(+currentRow.find("td:nth-child(6)").text()+10);
+                        currentRow.find("td:nth-child(6)").text(val);
+                        }
+                        table.on('draw', function () { updateMoveButtons(); });
+                    } else {
+                        alert(response.ErrorMessage || "Failed to change sort order.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error changing sort order:", xhr);
+                    alert("Error changing sort order. Please try again.");
+                }
+            });
+        });
+
+        function customizeExcelExport(xlsx) {
+             const stylesXml = xlsx.xl['styles.xml'];
+             const sheet = xlsx.xl.worksheets['sheet1.xml'];
+
+             const stylesDoc = stylesXml;
+             const sheetDoc = sheet;
+
+             // --- Fonts ---
+             const fonts = stylesDoc.getElementsByTagName('fonts')[0];
+
+             const fontData = stylesDoc.createElement('font');
+             fontData.innerHTML = `<sz val="9"/><name val="Times New Roman"/><family val="2"/>`;
+             fonts.appendChild(fontData);
+             const fontIndexData = fonts.childNodes.length - 1;
+
+             const fontHeader = stylesDoc.createElement('font');
+             fontHeader.innerHTML = `<sz val="9"/><name val="Times New Roman"/><family val="2"/><color rgb="FFFFFFFF"/>`;
+             fonts.appendChild(fontHeader);
+             const fontIndexHeader = fonts.childNodes.length - 1;
+
+             // --- Fills ---
+             const fills = stylesDoc.getElementsByTagName('fills')[0];
+             const grayFill = stylesDoc.createElement('fill');
+             grayFill.innerHTML = `
+                 <patternFill patternType="solid">
+                     <fgColor rgb="FF595959"/>
+                     <bgColor indexed="64"/>
+                 </patternFill>`;
+             fills.appendChild(grayFill);
+             const fillIndex = fills.childNodes.length - 1;
+
+             // --- Borders ---
+             const borders = stylesDoc.getElementsByTagName('borders')[0];
+             const border = stylesDoc.createElement('border');
+             border.innerHTML = `
+                 <left style="thin"><color auto="1"/></left>
+                 <right style="thin"><color auto="1"/></right>
+                 <top style="thin"><color auto="1"/></top>
+                 <bottom style="thin"><color auto="1"/></bottom>`;
+             borders.appendChild(border);
+             const borderIndex = borders.childNodes.length - 1;
+
+             // --- CellXfs ---
+             const cellXfs = stylesDoc.getElementsByTagName('cellXfs')[0];
+
+             const xfHeader = stylesDoc.createElement('xf');
+             xfHeader.setAttribute('xfId', '0');
+             xfHeader.setAttribute('fontId', fontIndexHeader);
+             xfHeader.setAttribute('fillId', fillIndex);
+             xfHeader.setAttribute('borderId', borderIndex);
+             xfHeader.setAttribute('applyFont', '1');
+             xfHeader.setAttribute('applyFill', '1');
+             xfHeader.setAttribute('applyBorder', '1');
+             xfHeader.setAttribute('applyAlignment', '1');
+             const alignment = stylesDoc.createElement('alignment');
+             alignment.setAttribute('horizontal', 'center');
+             xfHeader.appendChild(alignment);
+             cellXfs.appendChild(xfHeader);
+             const headerStyleIndex = cellXfs.childNodes.length - 1;
+
+             const xfData = stylesDoc.createElement('xf');
+             xfData.setAttribute('xfId', '0');
+             xfData.setAttribute('fontId', fontIndexData);
+             xfData.setAttribute('borderId', borderIndex);
+             xfData.setAttribute('applyFont', '1');
+             xfData.setAttribute('applyBorder', '1');
+             xfData.setAttribute('applyAlignment', '1');
+
+             const dataAlignment = stylesDoc.createElement('alignment');
+             dataAlignment.setAttribute('horizontal', 'left'); // force left alignment
+             xfData.appendChild(dataAlignment);
+
+             cellXfs.appendChild(xfData);
+             const dataStyleIndex = cellXfs.childNodes.length - 1;
+
+             // --- Apply styles to cells ---
+             const rows = sheetDoc.getElementsByTagName('row');
+
+             if (rows.length === 0) return;
+
+             const headerCells = rows[0].getElementsByTagName('c');
+             const headerColRefs = [];
+
+             // Get column letters from header
+             for (let i = 0; i < headerCells.length; i++) {
+                 const cellRef = headerCells[i].getAttribute('r');
+                 const col = cellRef.replace(/\d+/g, '');
+                 headerColRefs.push(col);
+                 headerCells[i].setAttribute('s', headerStyleIndex);
+             }
+
+             for (let r = 1; r < rows.length; r++) {
+                 const row = rows[r];
+                 const rowIndex = row.getAttribute('r');
+                 const existingCells = row.getElementsByTagName('c');
+                 const cellMap = {};
+
+                 for (let i = 0; i < existingCells.length; i++) {
+                     const cell = existingCells[i];
+                     const colRef = cell.getAttribute('r').replace(/\d+/g, '');
+                     cellMap[colRef] = cell;
+                 }
+
+                 // Create missing cells and apply style
+                 headerColRefs.forEach(colRef => {
+                     if (!cellMap[colRef]) {
+                         const cell = stylesDoc.createElement('c');
+                         const fullRef = colRef + rowIndex;
+                         cell.setAttribute('r', fullRef);
+                         cell.setAttribute('s', dataStyleIndex);
+                         cell.setAttribute('t', 'inlineStr'); // Treat as text
+
+                         const is = stylesDoc.createElement('is');
+                         const t = stylesDoc.createElement('t');
+                         t.textContent = ''; // blank string
+                         is.appendChild(t);
+                         cell.appendChild(is);
+
+                         row.appendChild(cell);
+                     } else {
+                         cellMap[colRef].setAttribute('s', dataStyleIndex);
+                     }
+                 });
+
+                 // Optional: sort cells in row alphabetically
+                 const cells = Array.from(row.getElementsByTagName('c'));
+                 cells.sort((a, b) => {
+                     const aCol = a.getAttribute('r').replace(/\d+/g, '');
+                     const bCol = b.getAttribute('r').replace(/\d+/g, '');
+                     return aCol.localeCompare(bCol);
+                 });
+                 cells.forEach(cell => row.appendChild(cell)); // reorder
+             }
+         }
+    </script>
+</head>
+
+
+<body>
+    <div id="header1">
+        <div class="logo"> <a href="@Url.Content("~/")" id="site-logo"><img src="@Url.Content("~/img/logo.png")" alt="Line List" /></a></div>
+        <div class="logo">
+            <img id="cenovus-logo" src="https://mc-3405db07-6660-4b4e-8bc8-1763-cdn-endpoint.azureedge.net/-/media/Project/WWW/Images/Brand/Cenovus-logo.svg" alt="Cenovus Logo" />
+        </div>
+    </div>
+    <header11>
+        <nav class="navbar navbar-expand-md navbar-light bg-body shadow"
+             id="myTopnav">
+            <i class="bx bx-menu" hidden id="sidebarOpen"></i>
+            <div class="container-md">
+                <div class="collapse navbar-collapse" id="navbarnav">
+                    @await Component.InvokeAsync("Navigation")
+                </div>
+            </div>
+            <a class="nav-link dropdown-toggle hide-arrow" style="width:135px" href="@cpwUrl">
+                <span>
+                    <i class="fa-solid fa-wrench"></i>
+                </span>
+                <span class="navlink">Back to CPW</span>
+            </a>
+            <ul style="margin-bottom: 0px;">
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                        <div class="avatar avatar-online bg-primary text-white rounded-circle text-center d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                            <span style="font-weight:bold;">@initials</span>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li>
+                            <a class="dropdown-item" href="#">
+                                <span class="d-flex align-items-center align-middle"><b>You are currently logged in as </b> </span>
+                                <div class="dropdown-divider"></div>
+                                <div class="d-flex">
+                                    <div class="flex-grow-1">
+                                        <span class="fw-semibold d-block">@User.Claims.Where(c => c.Type == "name").FirstOrDefault().Value</span>
+                                        <small class="text-muted">
+                                            @User.Identity.Name
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        @if (!isProduction)
+                        {
+                            <li>
+                                <div class="dropdown-item text-warning">
+                                    <strong>Current Environment:</strong> TQA
+                                </div>
+                                <div class="dropdown-divider"></div>
+                            </li>
+                        }
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">LogOut</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </nav>
+    </header11>
+
+    <div class="col-md-12">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+        <div class="bottom_content">
+            <div class="bottom">
+                <div class="footer-left">
+                    © Copyright 2025 Cenovus Energy Inc.
+                </div>
+                <div class="footer-right">
+                    Need Help or Have Suggestions?
+                    <a href="mailto:line.list@cenovus.com">line.list@cenovus.com</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src=" https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

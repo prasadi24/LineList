@@ -1,0 +1,45 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model LineList.Cenovus.Com.Domain.DataTransferObjects.TurnoverViewModel
+
+<form id="turnoverForm" method="post">
+    <input type="hidden" asp-for="ProjectId" />
+    <input type="hidden" asp-for="FromEpCompanyId" />
+    <div class="row mb-1">
+        <label class="col-md-4 text-black">Project:</label>
+        <div class="col-md-8">
+            <input type="text" class="form-control" value="@Model.ProjectName" disabled />
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label class="col-md-4 text-black">From EP:</label>
+        <div class="col-md-8">
+            <input type="text" class="form-control" value="@Model.FromEpCompanyName" disabled />
+        </div>
+    </div>
+    <div class="row mb-1">
+        <label class="col-md-4 text-black">To EP:</label>
+
+        <div class="col-md-8">
+            <select asp-for="ToEpCompanyId" id="ToEpCompanyId" class="form-control">
+                <option value="">-- Select EP --</option>
+                @foreach (var item in Model.EpCompanies)
+                {
+                    <option value="@item.Id">@item.Name - @item.Description</option>
+                }
+            </select>
+         
+        </div>     
+
+        <span asp-validation-for="ToEpCompanyId" class="text-danger"></span>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btnSaveTurnover">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+}

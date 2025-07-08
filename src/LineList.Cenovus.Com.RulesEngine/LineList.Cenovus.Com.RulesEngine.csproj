@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="ImportExport.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain.Interfaces\LineList.Cenovus.Com.Domain.Interfaces.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain.Services\LineList.Cenovus.Com.Domain.Services.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Domain\LineList.Cenovus.Com.Domain.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Infrastructure\LineList.Cenovus.Com.Infrastructure.csproj" />
+    <ProjectReference Include="..\LineList.Cenovus.Com.Security\LineList.Cenovus.Com.Security.csproj" />
+  </ItemGroup>
+
+</Project>

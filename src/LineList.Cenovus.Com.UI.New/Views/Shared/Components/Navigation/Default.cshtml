@@ -1,0 +1,92 @@
+﻿@using LineList.Cenovus.Com.UI.New.Models
+@model NavigationModel
+@{
+    var currentPath = Context.Request.Path.ToString().ToLower();
+}
+<ul class="navbar-nav ">
+    <li class="nav-item navbar-dropdown dropdown-user dropdown">
+        <a class="nav-link @(currentPath.StartsWith("/home", StringComparison.OrdinalIgnoreCase) || currentPath == "/" ? "active" : "")"
+           href="/Home" role="button">
+            Home
+        </a>
+    </li>
+  @if (Model.IsEpProjectVisible == true)
+    {
+        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+            <a class="nav-link @(currentPath.StartsWith("/epproject") ? "active" : "")" href="/EpProject" role="button">
+            Project
+        </a>
+    </li>
+    }
+    <li class="nav-item navbar-dropdown dropdown-user dropdown">
+        <a class="nav-link @(currentPath.StartsWith("/linelist") ? "active" : "")" href="/LineList" role="button">
+            Line List
+        </a>
+    </li>
+    <li class="nav-item navbar-dropdown dropdown-user dropdown">
+        <a class="nav-link @(currentPath.StartsWith("/linedbsearch") ? "active" : "")" href="/LineDBSearch" role="button">
+            Line DB Search
+        </a>
+    </li>
+    @if (Model.IsLDTImportVisible == true)
+    {
+        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+            <a class="nav-link @(currentPath.StartsWith("/ldtimport") ? "active" : "")" href="/LDTImport" role="button">
+                LDT Import
+            </a>
+        </li>
+    }
+ 
+     @if (Model.IsCenovusAdminVisible == true)
+    { 
+
+        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+            @{
+                var isAdminPage = currentPath.StartsWith("/Facility", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/WelcomeMessage", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/ConcurrentEngineeringLine", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/InsulationDefault", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/ScheduleDefault", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/EPCompany", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Area", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Specification", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/LocationType", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Location", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Commodity", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/PipeSpecification", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/SizeNPS", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/InsulationThickness", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/InsulationType", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/TracingType", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/TracingDesignNumberOfTracers", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/InsulationMaterial", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Schedule", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/TestMedium", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/FluidPhase", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/CorrosionAllowance", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Xray", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/NDECategory", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/PostWeldHeatTreatment", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/StressAnalysis", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/PaintSystem", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/InternalCoatingLiner", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Code", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/LineStatus", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/Fluid", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/CSAClassLocation", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/CSAHVP", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/EpCompanyLookup", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/EPProjectRole", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/LineListStatus", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/OperatingMode", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/ProjectType", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/SegmentType", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/PressureProtection", StringComparison.OrdinalIgnoreCase)
+                || currentPath.StartsWith("/NotesConfiguration", StringComparison.OrdinalIgnoreCase);
+            }
+            <a class="nav-link @(isAdminPage ? "active" : "")" href="/Facility" role="button">
+                Administration
+            </a>
+        </li>
+     } 
+</ul>

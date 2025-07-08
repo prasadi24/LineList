@@ -1,0 +1,96 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.WelcomeMessage
+@model WelcomeMessageEditDto
+
+<form asp-action="Update" id="welcomeMessageForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#welcome-message-details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Welcome Message Details Tab -->
+                <div class="tab-pane fade show active" id="welcome-message-details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label asp-for="Description" class="col-md-4 text-black">Description:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="Notes" class="col-md-4 text-black">Notes:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="Message2" class="col-md-4 text-black">Message 2:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Message2" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Message2" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label asp-for="Message3" class="col-md-4 text-black">Message 3:</label>
+                        <div class="col-md-8">
+                            <textarea asp-for="Message3" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Message3" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Record Id:</label>
+                        <div class="col-md-8">
+                            <input asp-for="Id" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                </div> <!-- End Audit Info Tab -->
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="btnSaveWelcomeMessage">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>

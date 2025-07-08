@@ -1,0 +1,420 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model SearchLineListViewModel
+
+<form asp-action="Create" id="lineListForm" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Hidden fields -->
+            <input type="hidden" id="hdnRevisionId" name="LineListRevisionId" value="@Model.LineListRevisionId" />
+            <input type="hidden" id="isDraft" value="@(Model.IsDraft)" />
+            <input type="hidden" id="isMostRecentRevision" value="@(Model.IsMostRecentRevision)" />
+            <input type="hidden" id="isReserved" value="@(Model.IsReserved)" />
+
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" title="Details" data-bs-target="#details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" title="Revision Control" data-bs-target="#revision-control" type="button" role="tab">
+                        Revision Control
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" title="Properties" data-bs-target="#properties" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" style="padding:5px;">
+                <!-- Details Tab -->
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+                    <div class="row bg-box search-box p-2">
+                        <div class="col-md-6 d-flex align-items-center">
+                            <label class="me-2 w-50 text-black">Document Number:</label>
+                            <input asp-for="DocumentNumber" class="form-control me-4" placeholder="Enter value" required />
+                            <span asp-validation-for="DocumentNumber" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center">
+                            <label class="me-2 w-100 text-black">Revision: (to be assigned)</label>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-center">
+                            <label class="me-2 w-50 text-black">Status:</label>
+                            <select id="lineListStatusDropdown" asp-for="SelectedLineListStatusId" class="form-select me-4" required>
+                                <option value="">-- Select --</option>
+                                @foreach (var status in Model.LineListStatuses)
+                                {
+                                    <option value="@status.Id">@status.Name - @status.Description</option>
+                                }
+                            </select>
+                            <span asp-validation-for="SelectedLineListStatusId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="bg-box search-box p-2">
+                        <div class="row mb-1">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">EP:</label>
+                                <select id="epCompanyDropdown" asp-for="SelectedEPId" class="form-select me-4" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach (var ep in Model.EPs)
+                                    {
+                                        <option value="@ep.Id">@ep.Name - @ep.Description</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedEPId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Default Specification:</label>
+                                <select id="specificationsDropdown" asp-for="SelectedSpecificationId" class="form-select me-4" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach (var spec in Model.Specifications)
+                                    {
+                                        <option value="@spec.Id">@spec.Name - @spec.Description</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedSpecificationId" class="text-danger"></span>
+                            </div>                           
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Facility:</label>
+                                <select id="facilityDropdown" asp-for="SelectedFacilityId" class="form-select me-4" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach (var facility in Model.Facilities)
+                                    {
+                                        <option value="@facility.Id">@facility.Name - @facility.Description</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedFacilityId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Location:</label>
+                                <select id="locationDropdown" asp-for="SelectedLocationId" class="form-select me-4">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var location in Model.Locations)
+                                    {
+                                        <option value="@location.Id">@location.Name - @location.Description</option>
+                                    }
+                                </select>
+                            </div>
+                         
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Project Type:</label>
+                                <select id="projectTypeDropdown" asp-for="SelectedProjectTypeId" class="form-select me-4">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var type in Model.ProjectTypes)
+                                    {
+                                        <option value="@type.Id">@type.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Default Area:</label>
+                                <select asp-for="SelectedAreaId" class="form-select me-4">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var area in Model.Areas)
+                                    {
+                                        <option value="@area.Id">@area.Name - @area.Description</option>
+                                    }
+                                </select>
+                            </div>
+                          
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Project Group:</label>
+                                <select id="cenovusProjectDropdown" asp-for="SelectedProjectId" class="form-select me-4">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var project in Model.CenovusProjects)
+                                    {
+                                        <option value="@project.Id">@project.Name - @project.Description - @project.Facility.Name - @project.ProjectType.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Description:</label>
+                                <input asp-for="Description" class="form-control me-4" placeholder="Enter value" />
+                            </div>
+                           
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-6 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Project:</label>
+                                <select id="epProjectDropdown" asp-for="SelectedEPProjectId" class="form-select me-4" required>
+                                    <option value="">-- Select --</option>
+                                    @foreach (var epProject in Model.EPProjects)
+                                    {
+                                        <option value="@epProject.Id">@epProject.Name - @epProject.Description</option>
+                                    }
+                                </select>
+                                <span asp-validation-for="SelectedEPProjectId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 d-flex align-items-center">
+                                <!-- Empty to fill space -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Revision Control Tab -->
+                <div class="tab-pane fade" id="revision-control" role="tabpanel">
+                    <div class="row">
+                        <!-- Left Column -->
+                        <div class="col-md-6">
+                            <!-- Change Status -->
+                            <div class="bg-box search-box p-2 mx-2">
+                                <h4 class="fw-bold text-primary">Change Status</h4>
+                                <div class="row mb-2">
+                                    <div class="col-md-12 d-flex align-items-center">
+                                        <label class="me-2 w-25 text-black">Status:</label>
+                                        <select asp-for="SelectedLineListStatusId" class="form-select w-50 me-4">
+                                            <option value="">-- Select --</option>
+                                            @foreach (var status in Model.LineListStatuses)
+                                            {
+                                                <option value="@status.Id">@status.Name - @status.Description</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-12 d-flex align-items-center">
+                                        <label class="me-2 w-25 text-black">Revision:</label>
+                                        <button type="button" id="btnRevertToDraft" class="btn btn-outline-secondary btn-sm" disabled>
+                                            REVERT TO DRAFT
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Print and Issue -->
+                            <div class="bg-box search-box p-2 mt-2 mx-2">
+                                <h4 class="fw-bold text-primary">Print And Issue</h4>
+                                <div class="mb-2">
+                                    <button type="button" id="btnPrintAndIssue" class="btn btn-outline-secondary btn-sm">
+                                        PRINT AND ISSUE
+                                    </button>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <label class="me-2 text-black">Locked For Issue:</label>
+                                    <span>No</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column -->
+                        <div class="col-md-6">
+                            <!-- Block Selection -->
+                            <div class="bg-box search-box p-2">
+                                <div class="row mb-2">
+                                    <div class="col-md-6 d-flex align-items-center">
+                                        <input type="radio" id="simpleBlock" name="SelectedBlock" value="simple" checked />
+                                        <label for="simpleBlock" class="fw-bold text-primary ms-2">Simple Initial Block</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Simple Initial Block -->
+                            <div id="simpleInitialBlock" class="bg-box search-box p-2">
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Prepared By:</label>
+                                                <input asp-for="PreparedBy" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Approved By Lead Disc. Engineer:</label>
+                                                <input asp-for="ApprovedByLead" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>                                   
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Reviewed By:</label>
+                                                <input asp-for="ReviewedBy" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Approved By Project Engineer:</label>
+                                                <input asp-for="ApprovedByProject" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-box search-box p-2">
+                                <div class="row mb-2">
+                                    <div class="col-md-6 d-flex align-items-center">
+                                        <input type="radio" id="complexBlock" name="SelectedBlock" value="complex" />
+                                        <label for="complexBlock" class="fw-bold text-primary ms-2">Complex Initial Block</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Complex Initial Block -->
+                            <div id="complexInitialBlock" class="bg-box search-box p-2" style="display: none;">
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Prepared By Process Engineer:</label>
+                                                <input asp-for="PreparedByProcess" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Approved By Lead Disc. Engineer:</label>
+                                                <input asp-for="ApprovedByLeadComplex" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Prepared By Mechanical Engineer:</label>
+                                                <input asp-for="PreparedByMechanical" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Approved By Project Engineer:</label>
+                                                <input asp-for="ApprovedByProjectComplex" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>                                   
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Reviewed By Process Engineer:</label>
+                                                <input asp-for="ReviewByProcess" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <div class="col-md-12 d-flex align-items-center">
+                                                <label class="me-1 w-75 text-black">Reviewed By Mechanical Engineer:</label>
+                                                <input asp-for="ReviewedByMechanical" class="form-control w-25 me-1" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Properties Tab -->
+                <div class="tab-pane fade m-2" id="properties" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Created Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="IsActive" class="col-md-4 text-black">Active:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                        </div>
+                    </div>
+                </div>
+            </div> <!-- End Tab Content -->
+        </div>
+    </div>
+
+    <div class="modal-footer d-flex justify-content-between w-100">
+        <div>
+            <button type="button" class="btn btn-outline-secondary me-2" id="btnDiscardDraft" disabled>DISCARD DRAFT</button>
+            <button type="button" class="btn btn-outline-secondary me-2" id="btnPrint" disabled>PRINT</button>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary me-2" id="btnSaveLineList">SAVE</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">CANCEL</button>
+        </div>
+    </div>
+
+
+    <!-- Revert to Draft Modal -->
+    <div class="modal fade" id="revertToDraftModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Revert to Draft</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">From Status:</label>
+                        <input type="text" class="form-control" id="revertFromStatus" readonly />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">To Status: <span class="text-danger">*</span></label>
+                        <select class="form-select" id="revertToStatus">
+                            <option value="">-- Select --</option>
+                        </select>
+                        <div class="invalid-feedback" id="revertToStatusValidation" style="display: none;">
+                            Required Field: Please select a status.
+                        </div>
+                    </div>
+                    <div class="alert alert-warning" id="revertErrorMsg" style="display: none;">
+                        Error reverting to draft. Please try again.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="btnRevertSave">Save</button>
+                    <button type="button" class="btn btn-secondary" id="btnRevertCancel" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

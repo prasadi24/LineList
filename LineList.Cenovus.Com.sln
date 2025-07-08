@@ -1,0 +1,79 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33502.453
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Domain", "src\LineList.Cenovus.Com.Domain\LineList.Cenovus.Com.Domain.csproj", "{3543E997-35C1-4F33-BBE1-308EFB803A54}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Infrastructure", "src\LineList.Cenovus.Com.Infrastructure\LineList.Cenovus.Com.Infrastructure.csproj", "{FF4839E5-94E8-4080-9F8B-D50D1D84B5B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Domain.Interfaces", "src\LineList.Cenovus.Com.Domain.Interfaces\LineList.Cenovus.Com.Domain.Interfaces.csproj", "{3C9460B4-84A4-42A9-9424-4A4861AAF4B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Domain.Repositories", "src\LineList.Cenovus.Com.Domain.Repositories\LineList.Cenovus.Com.Domain.Repositories.csproj", "{1AE6039D-993A-4975-B0CD-2B82BAD4A7B7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Domain.Services", "src\LineList.Cenovus.Com.Domain.Services\LineList.Cenovus.Com.Domain.Services.csproj", "{96B6AA6D-E897-4D3B-809B-6472EDF14391}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.Common", "src\LineList.Cenovus.Com.Common\LineList.Cenovus.Com.Common.csproj", "{216B3C9F-A42F-4E2E-97B2-E53E96143F59}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A630E6E0-5C8E-417D-81F4-F2327046FABD}"
+	ProjectSection(SolutionItems) = preProject
+		HowToDeploy.txt = HowToDeploy.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.UI.New", "src\LineList.Cenovus.Com.UI.New\LineList.Cenovus.Com.UI.New.csproj", "{E481D657-C611-4E6D-AF91-B80FED9313C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineList.Cenovus.Com.Security", "src\LineList.Cenovus.Com.Security\LineList.Cenovus.Com.Security.csproj", "{78498999-67E6-4BB1-AEF4-C88F384F6ADA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LineList.Cenovus.Com.RulesEngine", "src\LineList.Cenovus.Com.RulesEngine\LineList.Cenovus.Com.RulesEngine.csproj", "{318901DC-CC3A-401D-92C5-AA19348FCD81}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3543E997-35C1-4F33-BBE1-308EFB803A54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3543E997-35C1-4F33-BBE1-308EFB803A54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3543E997-35C1-4F33-BBE1-308EFB803A54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3543E997-35C1-4F33-BBE1-308EFB803A54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FF4839E5-94E8-4080-9F8B-D50D1D84B5B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF4839E5-94E8-4080-9F8B-D50D1D84B5B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF4839E5-94E8-4080-9F8B-D50D1D84B5B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF4839E5-94E8-4080-9F8B-D50D1D84B5B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C9460B4-84A4-42A9-9424-4A4861AAF4B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C9460B4-84A4-42A9-9424-4A4861AAF4B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C9460B4-84A4-42A9-9424-4A4861AAF4B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C9460B4-84A4-42A9-9424-4A4861AAF4B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1AE6039D-993A-4975-B0CD-2B82BAD4A7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AE6039D-993A-4975-B0CD-2B82BAD4A7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AE6039D-993A-4975-B0CD-2B82BAD4A7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AE6039D-993A-4975-B0CD-2B82BAD4A7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96B6AA6D-E897-4D3B-809B-6472EDF14391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B6AA6D-E897-4D3B-809B-6472EDF14391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B6AA6D-E897-4D3B-809B-6472EDF14391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B6AA6D-E897-4D3B-809B-6472EDF14391}.Release|Any CPU.Build.0 = Release|Any CPU
+		{216B3C9F-A42F-4E2E-97B2-E53E96143F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{216B3C9F-A42F-4E2E-97B2-E53E96143F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{216B3C9F-A42F-4E2E-97B2-E53E96143F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{216B3C9F-A42F-4E2E-97B2-E53E96143F59}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E481D657-C611-4E6D-AF91-B80FED9313C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E481D657-C611-4E6D-AF91-B80FED9313C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E481D657-C611-4E6D-AF91-B80FED9313C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E481D657-C611-4E6D-AF91-B80FED9313C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78498999-67E6-4BB1-AEF4-C88F384F6ADA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78498999-67E6-4BB1-AEF4-C88F384F6ADA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78498999-67E6-4BB1-AEF4-C88F384F6ADA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78498999-67E6-4BB1-AEF4-C88F384F6ADA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{318901DC-CC3A-401D-92C5-AA19348FCD81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{318901DC-CC3A-401D-92C5-AA19348FCD81}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{318901DC-CC3A-401D-92C5-AA19348FCD81}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{318901DC-CC3A-401D-92C5-AA19348FCD81}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0223D533-7EBB-44AB-B66D-12B7D92DE224}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,94 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model EpProjectInsulationDefaultDetailsViewModel
+
+<style>
+    table.table-bordered {
+        border-collapse: collapse;
+    }
+
+        table.table-bordered th,
+        table.table-bordered td {
+            border: 1px solid #dee2e6 !important;
+        }
+
+    thead.sticky-table-header th {
+        background-color: #1e4854;
+        color: white;
+        border: 1px solid #dee2e6 !important;
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<div id="mainPopup">
+    <dl class="row">
+        <dt class="col-sm-4">Name:</dt>
+        <dd class="col-sm-8">@($"{Model.InsulationDefault.Name} - {Model.InsulationDefault.Description}")</dd>
+
+        <dt class="col-sm-4">Insulation Material:</dt>
+        <dd class="col-sm-8">@($"{Model.InsulationDefault.InsulationMaterialName} - {Model.InsulationDefault.InsulationMaterialDescription}")</dd>
+
+        <dt class="col-sm-4">Insulation Type:</dt>
+        <dd class="col-sm-8">@($"{Model.InsulationDefault.InsulationTypeName} - {Model.InsulationDefault.InsulationTypeDescription}")</dd>
+
+        <dt class="col-sm-4">Tracing Type:</dt>
+        <dd class="col-sm-8">@($"{Model.InsulationDefault.TracingTypeName} - {Model.InsulationDefault.TracingTypeDescription}")</dd>
+    </dl>
+
+    <div>
+        <button type="button" class="btn btn-primary" data-id="@Model.InsulationDefault.Id" id="btnEditColumn" data-id="@Model.InsulationDefault.Id"
+                data-name="@Model.InsulationDefault.Name"
+                data-desc="@Model.InsulationDefault.Description">
+            Edit Column Definition
+        </button>
+        <button type="button" class="btn btn-primary" data-id="@Model.InsulationDefault.Id" id="btnEditRow">Edit Row Definition</button>
+    </div>
+
+    <h5 class="mt-3">Insulation Thickness and Number of Tracers can be edited by clicking on their value in the table below</h5>
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+        <table class="table table-bordered">
+            <thead class="sticky-table-header">
+                <tr>
+                    <th rowspan="3" class="align-middle text-center" style="border: 1px solid #dee2e6; padding-bottom: 3px;padding-top: 3px;">Size NPS</th>
+                    <th colspan="@(Model.GridData.First().Columns.Count() * 2)" class="text-center" style="border: 1px solid #dee2e6; padding-bottom: 3px;padding-top: 3px;">Operating Temperature</th>
+                </tr>
+                <tr>
+                    @foreach (var col in Model.GridData.First().Columns)
+                    {
+                        <th colspan="2" class="text-center" style="border: 1px solid #dee2e6; padding-bottom: 3px;padding-top: 3px;">@col.TemperatureRange</th>
+                    }
+                </tr>
+                <tr>
+                    @foreach (var col in Model.GridData.First().Columns)
+                    {
+                        <th class="text-center" style="border: 1px solid #dee2e6; padding-bottom: 3px;padding-top: 3px;">Ins Thk</th>
+                        <th class="text-center" style="border: 1px solid #dee2e6; padding-bottom: 3px;padding-top: 3px;">No. Tracers</th>
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var row in Model.GridData)
+                {
+                    <tr>
+                        <td>@row.Nps</td>
+                        @foreach (var col in row.Columns)
+                        {
+                            <td>
+                                <a href="#" class="open-modal" data-id="@col.ColumnId" data-url="@Url.Action("Update", "EpProjectInsulationDefaultDetails")?@col.DetailsUrl">
+                                    @col.InsulationThickness
+                                </a>
+                            </td>
+                            <td>
+                                <a href="#" class="open-modal" data-id="@col.ColumnId" data-url="@Url.Action("Update", "EpProjectInsulationDefaultDetails")?@col.DetailsUrl">
+                                    @col.NumberOfTracers
+                                </a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div id="dynamicContent"></div>

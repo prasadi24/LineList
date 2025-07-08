@@ -1,0 +1,1247 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model LineCollectionViewModel
+
+<form asp-action="Update" id="lineCollectionForm" method="post">
+    <input type="hidden" name="LineListRevisionId" value="@ViewBag.LineListRevisionId" />
+    <input asp-for="SequenceNumber" type="hidden" />
+    <input asp-for="Revision" type="hidden" />
+
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <!-- Tab Navigation -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#segments" type="button" role="tab">
+                        Segments
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#alt-operating-mode" type="button" role="tab">
+                        Alternative Operating Mode
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#jacket-info" type="button" role="tab">
+                        Jacket Info
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#properties" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+            <input type="hidden" id="lineCollectionId" value="@Model.LineId" />
+            <!-- Tab Content -->
+            <div class="tab-content p-0 m-0 ">
+                <!-- Details Tab -->
+                <div class="tab-pane fade show active p-0 m-0" id="details" role="tabpanel">
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold">
+                            Line Identification
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Location:</label>
+                                    <input asp-for="LocationName" class="form-control me-4" readonly />
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Specification:</label>
+                                    <input asp-for="SpecificationName" class="form-control me-4" readonly />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Area:</label>
+                                    <select id="AreaId" asp-for="AreaId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var item in Model.Areas)
+                                        {
+                                            <option value="@item.Id">@item.Name - @item.Description</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Commodity:</label>
+                                    <input asp-for="CommodityName" class="form-control me-4" readonly />
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Pipe Specification:</label>
+                                    <select id="PipeSpecificationId" asp-for="PipeSpecificationId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var item in Model.PipeSpecifications)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Size NPS:</label>
+                                    <select id="SizeNpsPipeId" asp-for="SizeNpsPipeId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var item in Model.SizeNpsPipes)
+                                        {
+                                            <option value="@item.Id">@item.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Line Sequence No:</label>
+                                    <input asp-for="SequenceNumber" class="form-control me-4" readonly />
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Originating PID:</label>
+                                    <input asp-for="OriginatingPID" class="form-control me-4" readonly />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">MIN:</label>
+                                    <input asp-for="ModularId" class="form-control me-4" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Line Routing From:</label>
+                                    <input asp-for="LineRoutingFrom" class="form-control me-4" readonly />
+                                </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Child:</label>
+                                        <input asp-for="IsChild" class="form-check-input" type="checkbox" />
+                                    </div>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Line Revision Status:</label>
+                                    <input asp-for="LineRevisionStatus" class="form-control me-4" readonly />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Line Routing To:</label>
+                                    <input asp-for="LineRoutingTo" class="form-control me-4" readonly />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold">
+                            Process Attributes
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Operating Pressure (kPag):</label>
+                                    <input asp-for="OperatingPressurePipe" class="form-control me-4" placeholder="Operating Pressure" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Design Pressure (kPag):</label>
+                                    <input asp-for="DesignPressure" class="form-control me-4" placeholder="Enter Specification" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Expansion Temp (°C):</label>
+                                    <input asp-for="ExpansionTemp" class="form-control me-4" placeholder="Enter Specification" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Operating Temp (°C):</label>
+                                    <input asp-for="OperatingTemp" class="form-control me-4" placeholder="Enter Commodity" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Design Temp Min (°C):</label>
+                                    <input asp-for="DesignTempMin" class="form-control me-4" placeholder="Enter Commodity" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Upset Pressure (kPag):</label>
+                                    <input asp-for="UpsetPressure" class="form-control me-4" placeholder="Enter Commodity" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Fluid Phase:</label>
+                                    <select asp-for="FluidPhaseId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var fluidPhase in Model.FluidPhases)
+                                        {
+                                            <option value="@fluidPhase.Id">@fluidPhase.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Design Temp Max (°C):</label>
+                                    <input asp-for="DesignTempMax" class="form-control me-4" placeholder="Enter Originating PID" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Upset Temp (°C):</label>
+                                    <input asp-for="UpsetTemp" class="form-control me-4" placeholder="Enter MIN" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Pressure Protection:</label>
+                                    <select asp-for="PressureProtectionId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var pp in Model.PressureProtections)
+                                        {
+                                            <option value="@pp.Id">@pp.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Notes:</label>
+                                    <input asp-for="Notes" class="form-control me-4" placeholder="Enter Line Revision Status" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold"> Mechanical Attributes </div> <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Schedule:</label>
+                                    <select asp-for="ScheduleId" class="form-select me-4" id="Schedule" data-bind="value: selectedSchedule">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var schedule in Model.Schedules)
+                                        {
+                                            <option value="@schedule.Id">@schedule.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Corrosion Allowance (mm):</label>
+                                    <select asp-for="CorrosionAllowanceId" class="form-select me-4" id="CorrosionAllow">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var corrosion in Model.CorrosionAllowances)
+                                        {
+                                            <option value="@corrosion.Id">@corrosion.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Stress Analysis:</label>
+                                    <select asp-for="StressAnalysisId" class="form-select me-4" id="stressAnalysis" data-bind="value: selectedSchedule">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var stressAnalysis in Model.StressAnalyses)
+                                        {
+                                            <option value="@stressAnalysis.Id">@stressAnalysis.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Wall Thickness (mm):</label>
+                                    <input asp-for="WallThickness" class="form-control me-4" placeholder="Enter Wall Thickness" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">X-Ray:</label>
+                                    <select asp-for="XRayId" class="form-select me-4" id="xRay">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var xRay in Model.Xrays)
+                                        {
+                                            <option value="@xRay.Id">@xRay.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Internal Coating:</label>
+                                    <select asp-for="InternalCoatingId" class="form-select me-4" id="internalCoating">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var internalCoating in Model.InternalCoatingLiners)
+                                        {
+                                            <option value="@internalCoating.Id">@internalCoating.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Test Pressure (kPag):</label>
+                                    <input asp-for="TestPressure" class="form-control me-4" placeholder="Enter Test Pressure" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">NDE Category:</label>
+                                    <select asp-for="NDECategoryId" class="form-select me-4" id="NDECategory">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var nde in Model.NDECategories)
+                                        {
+                                            <option value="@nde.Id">@nde.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Code:</label>
+                                    <select asp-for="CodeId" class="form-select me-4" id="code">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var code in Model.Codes)
+                                        {
+                                            <option value="@code.Id">@code.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Test Medium:</label>
+                                    <select asp-for="TestMediumId" class="form-select me-4" id="TestMedium">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var testMedium in Model.TestMediums)
+                                        {
+                                            <option value="@testMedium.Id">@testMedium.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">PWHT:</label>
+                                    <select asp-for="PWHTId" class="form-select me-4" id="pwht">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var pwht in Model.PWHTOptions)
+                                        {
+                                            <option value="@pwht.Id">@pwht.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">ABSA Registration:</label>
+                                    <select asp-for="PWHTId" class="form-select me-4" id="registration">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var pwht in Model.PWHTOptions)
+                                        {
+                                            <option value="@pwht.Id">@pwht.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">MDMT (°C):</label>
+                                    <input asp-for="MDMT" class="form-control me-4" placeholder="Enter MDMT" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <button type="button" id="btnMechanicalDefaults" class="btn btn-primary ms-2">
+                                        Mechanical Defaults
+                                    </button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold">
+                            CSA Pipeline
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Fluid:</label>
+                                    <select asp-for="FluidId" class="form-select me-4" id="Fluid">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var fluid in Model.Fluids)
+                                        {
+                                            <option value="@fluid.Id">@fluid.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">CSA HVP/LVP:</label>
+                                    <select asp-for="CsaHvpLvpId" class="form-select me-4" id="CSAHVPLVP">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var csaHvp in Model.CsaHvpLvps)
+                                        {
+                                            <option value="@csaHvp.Id">@csaHvp.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Hoop Stress Level (%):</label>
+                                    <input asp-for="HoopStressLevel" class="form-control me-4" type="number" placeholder="Enter Hoop Stress Level" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">CSA Class Location:</label>
+                                    <select asp-for="CsaClassLocationId" class="form-select me-4" id="CSAClassLocation">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var csaClass in Model.CsaClassLocations)
+                                        {
+                                            <option value="@csaClass.Id">@csaClass.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Pipe Material Spec:</label>
+                                    <input asp-for="PipeMaterialSpec" class="form-control me-4" placeholder="Enter Pipe Material Spec" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Sour Service:</label>
+                                    <input asp-for="SourService" type="checkbox" class="form-check-input" />
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Segments Tab -->
+                <div class="tab-pane fade" id="segments" role="tabpanel">
+                    <h5 id="SegmentCaption">
+                        Select a Segment to Edit Below
+                    </h5>
+
+                    <div class="row mb-1">
+                        <div class="col-md-5">
+                            <div class="table-responsive1">
+                                <table id="dataTable" class="table segmemtTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Actions</th>
+                                            <th>Segment #</th>
+                                            <th>Segment Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.LineRevisionSegment)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary btn-segment-update" data-id="@item.Id">
+                                                        <i class="fas fa-file-import"></i>
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-primary btn-segment-delete" data-id="@item.Id">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </td>
+                                                <td>@item.SegmentNumber</td>
+                                                <td>
+                                                    @if (item.SegmentTypeId != null)
+                                                    {
+                                                        @item.SegmentType.Description
+                                                        ;
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-start">
+                            <button class="btn btn-primary" id="btnCreateNewSegment">
+                                <i class="fas fa-plus"></i> ADD NEW SEGMENT
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold">
+                            Segment Details - <asp:Label ID="lblSegmentType" runat="server"></asp:Label>
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Segment Type:</label>
+                                    <select asp-for="SegmentTypeId" class="form-select me-4" id="segmentType">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var segmentType in Model.SegmentTypes)
+                                        {
+                                            <option value="@segmentType.Id">@segmentType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Operating Temp (°C):</label>
+                                    <input asp-for="OperatingTemp" class="form-control me-4" readonly placeholder="Enter Commodity" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Size NPS:</label>
+                                    <select asp-for="SizeNpsPipeId" class="form-select me-4" id="cboSizeNPS">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var size in Model.SizeNpsPipes)
+                                        {
+                                            <option value="@size.Id">@size.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Material:</label>
+                                    <select asp-for="InsulationMaterialId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var im in Model.InsulationMaterials)
+                                        {
+                                            <option value="@im.Id">@im.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Type:</label>
+                                    <select asp-for="InsulationTypeId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var type in Model.InsulationTypes)
+                                        {
+                                            <option value="@type.Id">@type.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Tracing Design Type:</label>
+                                    <select asp-for="TracingDesignId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var tracing in Model.TracingTypes)
+                                        {
+                                            <option value="@tracing.Id">@tracing.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Thickness (mm):</label>
+                                    <select asp-for="InsulationThicknessId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var thickness in Model.InsulationThicknesses)
+                                        {
+                                            <option value="@thickness.Id">@thickness.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Number of Tracers:</label>
+                                    <select asp-for="NumTracerId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var tracer in Model.TracingDesignNumTracers)
+                                        {
+                                            <option value="@tracer.Id">@tracer.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Tracing Design Hold Temp (°C):</label>
+                                    <input asp-for="TracingDesignHoldTemp" class="form-control me-4" placeholder="Enter Hold Temp" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Paint System:</label>
+                                    <select asp-for="PaintSystemId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var paint in Model.PaintSystems)
+                                        {
+                                            <option value="@paint.Id">@paint.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div>
+                            <button id="btnInsTracingDefaults"
+                                    type="button"
+                                    class="btn btn-outline-primary">
+                                <i class="bi bi-gear-fill"></i> Tracing Defaults
+                            </button>
+                        </div>
+                        <div class="text-end">
+                            <button id="btnSaveSegment"
+                                    type="button"
+                                    class="btn btn-primary me-2">
+                                <i class="bi bi-save"></i> Save Segment
+                            </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Alternative Operating Mode Tab -->
+                <div class="tab-pane fade" id="alt-operating-mode" role="tabpanel">
+                    <h5 class="bg-primary p-2 text-black ">Select an Operating Mode to Edit Below</h5>
+                    <div class="d-flex align-items-start justify-content-start mb-1">
+                        <!-- Table with 50% width -->
+                        <div class="me-3" style="width: 60%;">
+                            <div class="table-responsive">
+                                <table id="dataTable" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Edit</th>
+                                            <th>Mode #</th>
+                                            <th>Mode Type</th>
+                                            <th>Line Routing From</th>
+                                            <th>Line Routing To</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                        <tr>
+                                            <th><input type="text" class="form-control" placeholder="Edit" /></th>
+                                            <th><input type="text" class="form-control" placeholder="Mode #" /></th>
+                                            <th><input type="text" class="form-control" placeholder="Mode Type" /></th>
+                                            <th><input type="text" class="form-control" placeholder="Line Routing From" /></th>
+                                            <th><input type="text" class="form-control" placeholder="Line Routing To" /></th>
+                                            <th><input type="text" class="form-control" placeholder="Delete" /></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var mode in Model.LineRevisionOperatingModes)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-primary btn-operating-mode-edit"
+                                                            data-id="@mode.Id">
+                                                        <i class="bi bi-pencil-square"></i> Edit
+                                                    </button>
+                                                </td>
+                                                <td>@mode.OperatingModeNumber</td>
+                                                <td>@mode.OperatingMode?.Description</td>
+                                                <td>@mode.LineRoutingFrom</td>
+                                                <td>@mode.LineRoutingTo</td>
+                                                <td>
+                                                    <button type="button"
+                                                            class="btn btn-sm btn-danger btn-operating-mode-delete"
+                                                            data-id="@mode.Id">
+                                                        <i class="bi bi-trash"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Button beside the table -->
+                        <div class="col-md-2 d-flex align-items-start">
+                            <button class="btn btn-primary" id="btnAddAltOp" type="button">
+                                <i class="fas fa-plus"></i> ADD NEW OPERATING MODE
+                            </button>
+                        </div>
+                    </div>
+                    <div id="altOpModeSection">
+                        <div class="card border-secondary mb-2">
+                            <div class="card-header bg-box search-box text-black fw-bold">
+                                Additional Operating Mode
+                                <input type="hidden" id="altOpId" />                            <!-- will hold the existing OperatingMode.Id -->
+                                <input type="hidden" id="lineRevisionId" value="@Model.Id" />
+                            </div>
+                            <div class="card-body border border-gray search-box p-2">
+                                <div class="row mb-1">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Mode Type:</label>
+                                        <select asp-for="OperatingModeId"
+                                                class="form-select me-4"
+                                                id="modeType">
+                                            <option value="">-- Select Mode Type --</option>
+                                            @foreach (var om in Model.OperatingModes)
+                                            {
+                                                <option value="@om.Id">@om.Description</option>
+                                            }
+                                        </select>
+
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Operating Pressure (kPag):</label>
+                                        <input asp-for="OperatingPressurePipe"
+                                               class="form-control me-4"
+                                               id="OperatingPressure" />
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">ABSA Registration:</label>
+                                        <select asp-for="IsAbsaRegistration"
+                                                class="form-select me-4"
+                                                id="absaRegistration">
+                                            <option value="">-- Select --</option>
+                                            <option value="Yes">Y</option>
+                                            <option value="No">N</option>
+
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-1">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Line Routing From:</label>
+                                        <input asp-for="LineRoutingFrom" id="AltLineRoutingFrom" class="form-control me-4" />
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Operating Temp (°C):</label>
+                                        <input asp-for="OperatingTemp" id="AltOperatingTemp" class="form-control me-4" />
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Pressure Protection:</label>
+                                        <input asp-for="PressureProtectionId" class="form-control me-4" id="AltPressureProtection" />
+                                    </div>
+                                </div>
+                                <div class="row mb-1">
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Line Routing To:</label>
+                                        <input asp-for="LineRoutingTo" class="form-control me-4" id="AltLineRoutingTo" />
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Notes:</label>
+                                        <input asp-for="Notes" class="form-control me-4" value="" />
+                                    </div>
+                                    <div class="col-md-4 d-flex align-items-center">
+                                        <label class="me-2 w-50 text-black">Code:</label>
+                                        <select asp-for="CodeId"
+                                                class="form-select"
+                                                id="AltCode">
+                                            <option value="">-- Select --</option>
+                                            @foreach (var c in Model.Codes)
+                                            {
+                                                <option value="@c.Id">@c.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="card border-secondary mb-2">
+                                <div class="card-header bg-box search-box text-black fw-bold">
+                                    CSA Pipeline
+                                </div>
+                                <div class="card-body border border-gray search-box p-2" id="csaFields">
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">Fluid:</label>
+                                            <select asp-for="FluidId" class="form-select me-4" id="AltFluid">
+                                                <option value="">-- Select --</option>
+                                                @foreach (var fl in Model.Fluids)
+                                                {
+                                                    <option value="@fl.Id">@fl.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">CSA HVP/LVP:</label>
+                                            <select asp-for="CsaHvpLvpId" class="form-select me-4" id="AltCsaHvpLvp">
+                                                <option value="">-- Select --</option>
+                                                @foreach (var hvp in Model.CsaHvpLvps)
+                                                {
+                                                    <option value="@hvp.Id">@hvp.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">Hoop Stress Level (%):</label>
+                                            <input asp-for="HoopStressLevel" type="number" class="form-control" id="AltHoopStressLevel" />
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1">
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">CSA Class Location:</label>
+                                            <select asp-for="CsaClassLocationId" class="form-select me-4" id="AltCSAClassLocation">
+                                                <option value="">-- Select --</option>
+                                                @foreach (var csaClass in Model.CsaClassLocations)
+                                                {
+                                                    <option value="@csaClass.Id">@csaClass.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">Pipe Material Spec:</label>
+                                            <input asp-for="PipeMaterialSpec" class="form-control me-4" id="AltPipeMaterialSpec" />
+                                        </div>
+                                        <div class="col-md-4 d-flex align-items-center">
+                                            <label class="me-2 w-50 text-black">Sour Service:</label>
+                                            <input asp-for="SourService" type="checkbox" class="form-check-input" id="AltSourService" />
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="text-end mb-2">
+                        <button id="btnSaveAltOp" type="button" class="btn btn-primary me-2">
+                            <i class="bi bi-save"></i> Save Operating Mode
+                        </button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Jacket Info Tab -->
+            <div class="tab-pane fade" id="jacket-info" role="tabpanel">
+                <!-- Line Identification for Annulus -->
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-box search-box text-black fw-bold">
+                        Line Identification for Annulus
+                    </div>
+                    <div class="card-body border border-gray search-box p-2">
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Size NPS:</label>
+                                <select asp-for="JacketSizeNpsPipeId" class="form-select me-4" id="JacketSizeNpsPipe">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var size in Model.SizeNpsPipes)
+                                    {
+                                        <option value="@size.Id">@size.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Jacket:</label>
+                                <input asp-for="Jacket" class="form-control me-4" id="Jacket" placeholder="Enter Commodity" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Attributes for Annulus -->
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-box search-box text-black fw-bold">
+                        Process Attributes for Annulus
+                    </div>
+                    <div class="card-body border border-gray search-box p-2">
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Operating Pressure (kPag):</label>
+                                <input asp-for="JacketOperatingPressure" class="form-control me-4" id="JacketOperatingPressure" placeholder="Enter Location" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Design Pressure (kPag):</label>
+                                <input asp-for="JacketDesignPressure" class="form-control me-4" id="JacketDesignPressure" placeholder="Enter Specification" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Upset Pressure (kPag):</label>
+                                <input asp-for="JacketUpsetPressure" class="form-control me-4" id="JacketUpsetPressure" placeholder="Enter Commodity" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Operating Temp (°C):</label>
+                                <input asp-for="JacketOperatingTemp" class="form-control me-4" id="JacketOperatingTemp" placeholder="Enter Commodity" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Design Temp Min (°C):</label>
+                                <input asp-for="JacketDesignTempMin" class="form-control me-4" id="JacketDesignTempMin" placeholder="Enter Commodity" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Upset Temp (°C):</label>
+                                <input asp-for="JacketUpsetTemp" class="form-control me-4" id="JacketUpsetTemp" placeholder="Enter MIN" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Design Temp Max (°C):</label>
+                                <input asp-for="JacketDesignTempMax" class="form-control me-4" id="JacketDesignTempMax" placeholder="Enter Originating PID" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mechanical Attributes for Annulus -->
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-box search-box text-black fw-bold">
+                        Mechanical Attributes for Annulus
+                    </div>
+                    <div class="card-body border border-gray search-box p-2">
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Schedule:</label>
+                                <select asp-for="JacketScheduleId" class="form-select me-4" id="JacketSchedule">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var schedule in Model.Schedules)
+                                    {
+                                        <option value="@schedule.Id">@schedule.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Corrosion Allowance (mm):</label>
+                                <select asp-for="JacketCorrosionAllowanceId" class="form-select me-4" id="JacketCorrosionAllow">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var corrosion in Model.CorrosionAllowances)
+                                    {
+                                        <option value="@corrosion.Id">@corrosion.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Wall Thickness (mm):</label>
+                                <input asp-for="JacketWallThickness" class="form-control me-4" id="JacketWallThickness" placeholder="Enter Wall Thickness" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">X-Ray:</label>
+                                <select asp-for="JacketXRayId" class="form-select me-4" id="JacketXRay">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var xRay in Model.Xrays)
+                                    {
+                                        <option value="@xRay.Id">@xRay.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Test Pressure (kPag):</label>
+                                <input asp-for="JacketTestPressure" class="form-control me-4" id="JacketTestPressure" placeholder="Enter Test Pressure" />
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">NDE Category:</label>
+                                <select asp-for="JacketNDECategoryId" class="form-select me-4" id="JacketNDECategory">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var nde in Model.NDECategories)
+                                    {
+                                        <option value="@nde.Id">@nde.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 w-50 text-black">Test Medium:</label>
+                                <select asp-for="JacketTestMediumId" class="form-select me-4" id="JacketTestMedium">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var testMedium in Model.TestMediums)
+                                    {
+                                        <option value="@testMedium.Id">@testMedium.Name</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Properties Tab -->
+            <div class="tab-pane fade" id="properties" role="tabpanel">
+                <div class="card border-secondary mb-3">
+                    <div class="card-header bg-box search-box text-black fw-bold">
+                        Properties
+                    </div>
+                    <div class="card-body border border-gray search-box p-2">
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Record Id:</label>
+                            <div class="col-md-8">
+                                <input asp-for="Id" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Created By:</label>
+                            <div class="col-md-8">
+                                <input asp-for="CreatedBy" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Created Date:</label>
+                            <div class="col-md-8">
+                                <input asp-for="CreatedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Last Modified By:</label>
+                            <div class="col-md-8">
+                                <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Last Modified Date:</label>
+                            <div class="col-md-8">
+                                <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label asp-for="IsActive" class="col-md-4 text-black">Active:</label>
+                            <div class="col-md-8 d-flex align-items-center">
+                                <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label asp-for="IsMinimumInformationCompliance" class="col-md-4 text-black">MinimumInformationCompliance:</label>
+                            <div class="col-md-8 d-flex align-items-center">
+                                <input asp-for="IsMinimumInformationCompliance" type="checkbox" class="form-check-input" />
+                            </div>
+                        </div>
+
+                        <div class="row mb-1">
+                            <label class="col-md-4 text-black">Parent/Child Number:</label>
+                            <div class="col-md-8">
+                                <input asp-for="ParentChild" class="form-control-plaintext" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Properties Tab -->
+        </div>
+    </div> <!-- End Tab Content -->
+    </div>
+    <div class="modal-footer d-flex justify-content-between w-100">
+        <div class="d-flex">
+            <button type="button" class="btn btn-danger btn-delete me-2" id="btnDelete">Delete</button>
+            <button type="button" class="btn btn-primary" id="btnSetAllDefaults">Set All Defaults</button>
+        </div>
+        <div class="d-flex">
+            <button type="submit" class="btn btn-primary me-2" id="btnSaveLineCollection">Save</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+</form>
+
+
+
+<script>
+   
+        function clearOperatingModeForm() {
+            // Clear input values
+            $('#altOpId').val('');
+            $('#lineRevisionId').val('');
+            $('#OperatingPressure').val('');
+            $('#AltOperatingTemp').val('');
+            $('#AltLineRoutingFrom').val('');
+            $('#AltLineRoutingTo').val('');
+            $('#AltNotes').val('');
+            $('#AltHoopStressLevel').val('');
+            $('#AltPipeMaterialSpec').val('');
+            $('#AltSourService').prop('checked', false);
+
+            // Reset selects to first/default option
+            $('#modeType').prop('selectedIndex', 0);
+            $('#AltCode').prop('selectedIndex', 0);
+            $('#AltFluid').prop('selectedIndex', 0);
+            $('#AltCsaHvpLvp').prop('selectedIndex', 0);
+            $('#AltCSAClassLocation').prop('selectedIndex', 0);
+            $('#AltPressureProtection').prop('selectedIndex', 0);
+            $('#absaRegistration').prop('selectedIndex', 0);
+
+            // Disable all form controls
+            $('#altOpModeFields, #csaFields').find('input, select, textarea').prop('disabled', true);
+            $('#btnSaveAltOp').prop('disabled', true);
+            $('#btnDeleteAltOp').prop('disabled', true);
+        }
+
+        // Init state on page load
+        clearOperatingModeForm();
+
+       
+</script>
+
+
+@* <script> *@
+@* 	$(document).ready(function () { *@
+@* 		console.log("✅ Script loaded"); *@
+
+@* 		function clearOperatingModeForm() { *@
+@* 			// Clear input values *@
+@* 			$('#altOpId').val(''); *@
+@* 			$('#lineRevisionId').val(''); *@
+@* 			$('#OperatingPressure').val(''); *@
+@* 			$('#AltOperatingTemp').val(''); *@
+@* 			$('#AltLineRoutingFrom').val(''); *@
+@* 			$('#AltLineRoutingTo').val(''); *@
+@* 			$('#AltNotes').val(''); *@
+@* 			$('#AltHoopStressLevel').val(''); *@
+@* 			$('#AltPipeMaterialSpec').val(''); *@
+@* 			$('#AltSourService').prop('checked', false); *@
+
+@* 			// Reset selects to first/default option *@
+@* 			$('#modeType').prop('selectedIndex', 0); *@
+@* 			$('#AltCode').prop('selectedIndex', 0); *@
+@* 			$('#AltFluid').prop('selectedIndex', 0); *@
+@* 			$('#AltCsaHvpLvp').prop('selectedIndex', 0); *@
+@* 			$('#AltCSAClassLocation').prop('selectedIndex', 0); *@
+@* 			$('#AltPressureProtection').prop('selectedIndex', 0); *@
+@* 			$('#absaRegistration').prop('selectedIndex', 0); *@
+
+@* 			// Disable all form controls *@
+@* 			$('#altOpModeFields, #csaFields').find('input, select, textarea').prop('disabled', true); *@
+@* 			$('#btnSaveAltOp').prop('disabled', true); *@
+@* 			$('#btnDeleteAltOp').prop('disabled', true); *@
+@* 		} *@
+
+@* 		// Init state on page load *@
+@* 		clearOperatingModeForm(); *@
+
+@* 		// Add New button click *@
+@* 		$('#btnAddAltOp').on('click', function () { *@
+@* 			clearOperatingModeForm(); *@
+@* 			$('#altOpModeSection').removeClass('d-none').slideDown(); *@
+
+@* 			// Enable form for adding new *@
+@* 			$('#altOpModeFields, #csaFields').find('input, select, textarea').prop('disabled', false); *@
+@* 			$('#btnSaveAltOp').prop('disabled', false); *@
+@* 		}); *@
+
+@* 		// Edit button click *@
+@* 		$(document).on('click', '.btn-operating-mode-edit', function () { *@
+@* 			const id = $(this).data('id'); *@
+@* 			console.log("✏️ Edit clicked for ID:", id); *@
+
+@* 			clearOperatingModeForm(); // Reset first *@
+
+@* 			$.get('@Url.Action("GetOperatingMode", "LineCollection")', { id: id }, function (dto) { *@
+@* 				if (!dto) return; *@
+
+@* 				$('#altOpId').val(dto.id || ''); *@
+@* 				$('#lineRevisionId').val(dto.lineRevisionId || ''); *@
+@* 				$('#modeType').val(dto.operatingModeId || ''); *@
+@* 				$('#OperatingPressure').val(dto.operatingPressurePipe || ''); *@
+@* 				$('#AltOperatingTemp').val(dto.operatingTemperaturePipe || ''); *@
+@* 				$('#AltLineRoutingFrom').val(dto.lineRoutingFrom || ''); *@
+@* 				$('#AltLineRoutingTo').val(dto.lineRoutingTo || ''); *@
+@* 				$('#AltNotes').val(dto.notes || ''); *@
+@* 				$('#AltCode').val(dto.codeId || ''); *@
+@* 				$('#AltFluid').val(dto.fluidId || ''); *@
+@* 				$('#AltCsaHvpLvp').val(dto.csaHvpLvpId || ''); *@
+@* 				$('#AltHoopStressLevel').val(dto.hoopStressLevel || ''); *@
+@* 				$('#AltCSAClassLocation').val(dto.csaClassLocationId || ''); *@
+@* 				$('#AltPipeMaterialSpec').val(dto.pipeMaterialSpec || ''); *@
+@* 				$('#AltSourService').prop('checked', dto.sourService || false); *@
+@* 				$('#AltPressureProtection').val(dto.pressureProtectionId || ''); *@
+@* 				$('#absaRegistration').val(dto.lineRevisionOperatingModeId || ''); *@
+
+@* 				// Enable form for editing *@
+@* 				$('#altOpModeSection').removeClass('d-none').slideDown(); *@
+@* 				$('#altOpModeFields, #csaFields').find('input, select, textarea').prop('disabled', false); *@
+@* 				$('#btnSaveAltOp').prop('disabled', false); *@
+@* 				$('#btnDeleteAltOp').prop('disabled', false); *@
+@* 			}); *@
+@* 		}); *@
+
+@* 		// Save button *@
+@* 		$(document).on('click', '#btnSaveAltOp', function () { *@
+@* 			const dto = { *@
+@* 				Id: $('#altOpId').val(), *@
+@* 				LineRevisionId: $('#lineRevisionId').val(), *@
+@* 				OperatingModeId: $('#modeType').val(), *@
+@* 				OperatingPressurePipe: $('#OperatingPressure').val(), *@
+@* 				OperatingTemperaturePipe: $('#AltOperatingTemp').val(), *@
+@* 				LineRoutingFrom: $('#AltLineRoutingFrom').val(), *@
+@* 				LineRoutingTo: $('#AltLineRoutingTo').val(), *@
+@* 				CodeId: $('#AltCode').val(), *@
+@* 				Notes: $('#AltNotes').val(), *@
+@* 				FluidId: $('#AltFluid').val(), *@
+@* 				CsaHvpLvpId: $('#AltCsaHvpLvp').val(), *@
+@* 				HoopStressLevel: $('#AltHoopStressLevel').val(), *@
+@* 				CsaClassLocationId: $('#AltCSAClassLocation').val(), *@
+@* 				PipeMaterialSpec: $('#AltPipeMaterialSpec').val(), *@
+@* 				SourService: $('#AltSourService').is(':checked'), *@
+@* 				PressureProtectionId: $('#AltPressureProtection').val(), *@
+@* 				LineRevisionOperatingModeId: $('#absaRegistration').val() *@
+@* 			}; *@
+
+@* 			$.ajax({ *@
+@* 				url: '@Url.Action("SaveOperatingMode", "LineCollection")', *@
+@* 				type: 'POST', *@
+@* 				contentType: 'application/json', *@
+@* 				data: JSON.stringify(dto) *@
+@* 			}).done(function (r) { *@
+@* 				if (r.success) location.reload(); *@
+@* 				else alert('❌ Error saving: ' + (r.errorMessage || 'Unknown error')); *@
+@* 			}); *@
+@* 		}); *@
+
+@* 		// Delete button *@
+@* 		$(document).on('click', '#btnDeleteAltOp', function () { *@
+@* 			if (!confirm('Are you sure you want to delete?')) return; *@
+
+@* 			const id = $('#altOpId').val(); *@
+@* 			if (!id) return alert('❌ Missing ID'); *@
+
+@* 			$.post('@Url.Action("DeleteOperatingMode", "LineCollection")', { id: id }) *@
+@* 				.done(function (r) { *@
+@* 					if (r.success) location.reload(); *@
+@* 					else alert('❌ Delete failed: ' + (r.errorMessage || 'Unknown error')); *@
+@* 				}); *@
+@* 		}); *@
+@* 	}); *@
+
+@* 	$('#btnCreateNewSegment').on('click', function () { *@
+@* 		$('#lblSegmentType').text('New'); *@
+
+@* 		$('#segmentType').selectedIndex = 0; *@
+@* 		$('#cboInsulationType')[0].selectedIndex = 0; *@
+@* 		$('#cboInsulationMaterial')[0].selectedIndex = 0; *@
+@* 		$('#cboInsulationThickness')[0].selectedIndex = 0; *@
+@* 		$('#cboPaintSystem')[0].selectedIndex = 0; *@
+@* 		$('#cboTracingDesign')[0].selectedIndex = 0; *@
+@* 		$('#cboSizeNPS').selectedIndex = 0; *@
+
+@* 		$('#lblOperatingTemp').text($.trim($('#txtOperatingTemp').val())); *@
+
+@* 		$('#cboNumTracers')[0].selectedIndex = 0; *@
+@* 		$('#txtTracingHoldTemp').val(''); *@
+@* 		$('#cboPaintSystem')[0].selectedIndex = 0; *@
+
+@* 		$('#btnInsTracingDefaults') *@
+@* 			.attr('disabled', 'disabled') *@
+@* 			.removeClass() *@
+@* 			.addClass('button gray') *@
+@* 			.prop('disabled', true); *@
+
+@* 		// Call your custom method here *@
+@* 		ToggleSegmentUI(true); *@
+
+@* 		// Update image source *@
+@* 		let imgSrc = $('#imgAddNewSegment').attr('src'); *@
+@* 		$('#imgAddNewSegment').attr('src', ToggleSetEnabledImage(imgSrc, false)); *@
+
+@* 		// Disable Add New Segment link *@
+@* 		Utility.DisableElement($('#btnCreateNewSegment')); *@
+
+@* 		// Enable Cancel Segment *@
+@* 		$('#lnkCancelSegment') *@
+@* 			.removeAttr('disabled') *@
+@* 			.prop('disabled', false) *@
+@* 			.removeClass() *@
+@* 			.addClass('button darkgray'); *@
+
+@* 		// Enable Save Segment *@
+@* 		$('#lnkSaveSegment') *@
+@* 			.removeAttr('disabled') *@
+@* 			.prop('disabled', false) *@
+@* 			.removeClass() *@
+@* 			.addClass('button green'); *@
+
+@* 		// Clear SelectedSegmentId — simulate variable clearing if needed *@
+@* 		window.SelectedSegmentId = null; *@
+
+@* 		// Hide error message *@
+@* 		$('#deleteSegmentErr').hide(); *@
+@* 	}); *@
+@* </script> *@
+

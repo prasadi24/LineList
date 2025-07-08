@@ -1,0 +1,26 @@
+ https://dotnet.microsoft.com/en-us/download/dotnet/6.0
+        Download ASP.NET Core Runtime 6.0.20 Windows Hosting bundle
+
+        Right click on API project -> Publish
+        Create Profile with IIS
+
+       Copy all files from publish directory to web server iis app folder
+
+       Make sure Anonymous Authentication is disabled and Windows Authentication is enabled in both Web and API applications in IIS
+
+     If web app giving CORS policy error,  Edit web.config file and copy below section under system.webserver 
+
+        <httpProtocol>
+      <customHeaders>
+        <add name="Access-Control-Allow-Origin" value="http://cgywsupdv0001" />
+        <add name="Access-Control-Allow-Headers" value="Origin, X-Requested-With, Content-Type, Accept" />
+        <add name="Access-Control-Allow-Methods" value="GET, POST, PUT, DELETE, OPTIONS" />
+        <add name="Access-Control-Allow-Credentials" value="true" /> <!-- Ensure this header is present -->
+      </customHeaders>
+    </httpProtocol>
+
+        SQL Server Login Issue IIS 
+        SSMS - > Security -> New Login and add below user
+        IIS APPPOOL\DefaultAppPool 
+        After adding, right click -> propoerties -> user mapping -> db_reader and db_writer for supplierdb
+

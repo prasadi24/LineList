@@ -1,0 +1,338 @@
+﻿@model LineList.Cenovus.Com.API.DataTransferObjects.Import.ImportResultDto
+@inject LineList.Cenovus.Com.Domain.Interfaces.ServiceInterfaces.IImportService ImportService
+@inject LineList.Cenovus.Com.Security.CurrentUser CurrentUser
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportSheet
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportCommodity
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportFacility
+@using LineList.Cenovus.Com.API.DataTransferObjects.ImportLocation
+
+@{
+    Layout = "~/Views/Shared/_LayoutFull.cshtml";
+    var sheets = Model.ImportSheets;
+    var commodities = Model.ImportCommodities;
+    var facilities = Model.ImportFacilities;
+    var locations = Model.ImportLocations;
+    bool hasDuplicates = sheets.Any(s => s.NumberOfExceptions > 0);
+}
+
+<h2>Import Details</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>File Name</th>
+            <th>Facility</th>
+            <th>Created On</th>
+            <th>Created By</th>
+            <th>Modified On</th>
+            <th>Modified By</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.OriginalFileName</td>
+            <td>@Model.FacilityName</td>
+            <td>@Model.CreatedOn.ToString("g")</td>
+            <td>@Model.CreatedBy</td>
+            <td>@(Model.ModifiedOn.HasValue ? Model.ModifiedOn.Value.ToString("g") : "N/A")</td>
+            <td>@Model.ModifiedBy</td>
+            <td>@Model.Status</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="mb-3">
+    <button class="btn btn-danger delete-btn" data-id="@Model.Id">Delete</button>
+    <a href="@Url.Action("Index")" class="btn btn-secondary">Go Back</a>
+</div>
+
+<h2>Sheets</h2>
+<div class="table">
+    <table id="sheetsTable" class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sheet Name</th>
+                <th>Sheet Type</th>
+                <th>Number of Rows</th>
+                <th>Number of Accepted</th>
+                <th>Number of Imported</th>
+                <th>Exceptions</th>
+                <th>Ignored Fields</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sheet in sheets)
+            {
+                <tr>
+                    @* <td> *@
+                    @*     @if (sheet.NumberOfExceptions > 0) *@
+                    @*     { *@
+                    @*         <a href="@Url.Action("Exceptions", new { importSheetId = sheet.Id, importId = Model.Id })">@sheet.Name</a> *@
+                    @*     } *@
+                    @*     else *@
+                    @*     { *@
+                    @*         @sheet.Name *@
+                    @*     } *@
+                    @* </td> *@
+                    <td><a href="@Url.Action("Exceptions", new { importSheetId = sheet.Id, importId = Model.Id })">@sheet.Name</a></td>
+                    <td>@sheet.SheetType</td>
+                    <td>@sheet.NumberOfRows</td>
+                    <td>@sheet.NumberOfAccepted</td>
+                    <td>@sheet.NumberOfImported</td>
+                    <td>@sheet.NumberOfExceptions</td>
+                    <td>@(sheet.IgnoredFields?.Replace(";", ", ").Replace("excel", "") ?? "")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Commodity Summary</h2>
+        <div class="table">
+            <table id="commodityTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Specification</th>
+                        <th>Commodity</th>
+                        <th>Before Count</th>
+                        <th>After Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var commodity in commodities)
+                    {
+                        <tr>
+                            <td>@commodity.Commodity.Specification?.Name</td>
+                            <td>@commodity.Commodity.Name</td>
+                            <td>@commodity.BeforeCount</td>
+                            <td>@commodity.AfterCount</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2"><strong>Total</strong></td>
+                        <td>@commodities.Sum(c => c.BeforeCount)</td>
+                        <td>@commodities.Sum(c => c.AfterCount)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h2>Facility Summary</h2>
+        <div class="table">
+            <table id="facilityTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Facility</th>
+                        <th>Before Count</th>
+                        <th>After Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var facility in facilities)
+                    {
+                        <tr>
+                            <td>@facility.Facility.Name</td>
+                            <td>@facility.BeforeCount</td>
+                            <td>@facility.AfterCount</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td>@facilities.Sum(f => f.BeforeCount)</td>
+                        <td>@facilities.Sum(f => f.AfterCount)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <h2>Location Summary</h2>
+        <div class="table">
+            <table id="locationTable" class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Location</th>
+                        <th>Before Count</th>
+                        <th>After Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var location in locations)
+                    {
+                        <tr>
+                            <td>@location.Location.Name</td>
+                            <td>@location.BeforeCount</td>
+                            <td>@location.AfterCount</td>
+                        </tr>
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td><strong>Total</strong></td>
+                        <td>@locations.Sum(l => l.BeforeCount)</td>
+                        <td>@locations.Sum(l => l.AfterCount)</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Add some dummy content to force page scrolling -->
+<div class="mt-5" style="height: 500px;">
+    <p>This is dummy content to ensure the page can scroll. You can remove this once the layout is confirmed to work.</p>
+</div>
+
+<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Processing...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <style>
+        /* Ensure the page can grow and scroll */
+        html, body {
+            height: 100%;
+            overflow: auto;
+        }
+
+        main {
+            min-height: 100vh;
+            overflow: auto;
+        }
+
+        .table-responsive {
+            overflow: visible !important; /* Allow the table to contribute to page height */
+        }
+        .section-heading {
+            margin-bottom: 0.5rem; 
+        }
+
+        .dataTables_scrollBody {
+            min-height: auto !important;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            initializeDataTables();
+        });
+
+        function initializeDataTables() {
+            let tableHeight = 200; // Fixed pixel height for table scrolling
+
+            // Sheets Table
+            $('#sheetsTable').DataTable({
+                dom: 'rt', // Simplified DOM layout (no buttons, search, etc.)
+                order: [[0, 'asc']], // Order by Sheet Name
+                scrollY: tableHeight + 'px',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                responsive: false,
+                fixedHeader: true,
+                select: { style: 'single' },
+                columnDefs: [
+                    { targets: '_all', orderable: true, searchable: false },// Enable sorting, disable searching
+                    {
+                        targets: 0, // Sheet Name column
+                        createdCell: function (td, cellData, rowData, row, col) {
+                            // Ensure links are clickable by preventing DataTables from capturing the click
+                            $(td).off('click'); // Remove DataTables click handlers
+                        }
+                    }
+                ]
+            });
+            // Prevent DataTables from blocking link clicks
+            $('#sheetsTable').on('click', 'td a', function (e) {
+                e.stopPropagation(); // Prevent DataTables from handling the click
+                window.location.href = $(this).attr('href'); // Navigate to the link
+            });
+            // Commodity Table
+            $('#commodityTable').DataTable({
+                dom: 'rt',
+                order: [[0, 'asc']], // Order by Specification
+                scrollY: tableHeight + 'px',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                responsive: false,
+                fixedHeader: true,
+                select: { style: 'single' },
+                columnDefs: [
+                    { targets: '_all', orderable: true, searchable: false }
+                ]
+            });
+
+            // Facility Table
+            $('#facilityTable').DataTable({
+                dom: 'rt',
+                order: [[0, 'asc']], // Order by Facility
+                scrollY: tableHeight + 'px',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                responsive: false,
+                fixedHeader: true,
+                select: { style: 'single' },
+                columnDefs: [
+                    { targets: '_all', orderable: true, searchable: false }
+                ]
+            });
+
+            // Location Table
+            $('#locationTable').DataTable({
+                dom: 'rt',
+                order: [[0, 'asc']], // Order by Location
+                scrollY: tableHeight + 'px',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: false,
+                autoWidth: false,
+                responsive: false,
+                fixedHeader: true,
+                select: { style: 'single' },
+                columnDefs: [
+                    { targets: '_all', orderable: true, searchable: false }
+                ]
+            });
+        }
+
+        $(".delete-btn").click(function () {
+            if (!confirm("Are you sure you want to delete this import?")) {
+                return;
+            }
+
+            var id = $(this).data("id");
+            $("#loadingModal").modal("show");
+            $.ajax({
+                url: "@Url.Action("Delete", "LDTImport")",
+                type: "POST",
+                data: { id: id },
+                success: function () {
+                    window.location.href = "@Url.Action("Index")";
+                },
+                error: function () {
+                    $("#loadingModal").modal("hide");
+                    alert("An error occurred while deleting the import.");
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,62 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model HomeViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutHome.cshtml";
+    ViewData["HomeData"] = Model;
+}
+
+<div class="mt-2">
+    <div class="row">
+        <div class="container mt-8">
+            <div class="row justify-content-center">
+                <div class="col-lg-12 col-md-12">
+                    <div class="card shadow-sm border-0">
+                        <!-- Card Header -->
+                        <div class="card-header d-flex align-items-center justify-content-between">
+                            <h2 class="text-primary fw-bold mb-0">Welcome to the Line List Application</h2>
+                        </div>
+
+                        <div class="card-body">
+                            @if (Model.WelcomeMessage != null)
+                            {
+                                <div class="mb-3 alert alert-dark mb-0 title fw-bold">INFO, NEWS, ETC.</div>
+
+                                <p class="lead text-wrap m-2 p-2">@Model.WelcomeMessage.Description</p>
+
+                                <p class="lead text-wrap bg-label-warning text-black rounded m-2 p-2">
+                                    <strong>Notes:   </strong>  @Model.WelcomeMessage.Notes
+                                </p>
+
+                                @if (!string.IsNullOrEmpty(Model.WelcomeMessage.Message2))
+                                {
+                                    <p class="lead text-wrap bg-label-warning text-black rounded m-2 p-2">@Model.WelcomeMessage.Message2</p>
+                                }
+
+                                @if (!string.IsNullOrEmpty(Model.WelcomeMessage.Message3))
+                                {
+                                    var message = Model.WelcomeMessage.Message3;
+                                    var emailRegex = new System.Text.RegularExpressions.Regex(@"([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})");
+                                    message = emailRegex.Replace(message, match => $"<a class=\"text-primary\" href=\"mailto:{match.Value}\">{match.Value}</a>");
+                                    <p class="lead text-wrap m-2 p-2">@Html.Raw(message)</p>
+                                }
+                            }
+                            else
+                            {
+                                <div class="alert alert-warning m-2 p-2">
+                                    Welcome message data is not available.
+                                </div>
+                            }
+
+                            @* Uncomment if needed
+                            <br />
+                            <div class="logo">
+                                <img id="cenovus-logo" src="https://mc-3405db07-6660-4b4e-8bc8-1763-cdn-endpoint.azureedge.net/-/media/Project/WWW/Images/Brand/Cenovus-logo.svg" alt="Cenovus Logo" />
+                            </div> *@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

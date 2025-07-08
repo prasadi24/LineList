@@ -1,0 +1,1172 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model SearchLineListViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutFull.cshtml";
+}
+
+<div class="mt-md-0">
+    <div class="row">
+        <div class="card">
+            <div class="card-header mt-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-3 page-header">Line Lists</h5>
+                </div>
+            </div>
+            <div class="card-header bg-secondary search-box mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="text-uppercase text-white fw-bold" style="margin-bottom:0px;">Search for a Line List</h5>
+                    <a class="btn btn-primary ms-auto" data-bs-toggle="collapse" href="#searchPnl" role="button">
+                        <i class="fas fa-chevron-down"></i> Toggle Search
+                    </a>
+                </div>
+            </div>
+
+            <div id="searchPnl" class="collapse show">
+                <div class="card-body">
+                    <form asp-action="SearchResults" method="post">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <!-- Row 1 -->
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Facility:</label>
+                                <select id="facilityDropdown" asp-for="SelectedFacilityId" class="me-2 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var facility in Model.Facilities)
+                                    {
+                                        <option value="@facility.Id">@facility.Name - @facility.Description</option>
+                                    }
+                                </select>
+                                <span class="text-danger me-2" title="Required Field">*</span>
+                            </div>
+                            @*       <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Project Group:</label>
+                                <select id="cenovusProjectDropdown" asp-for="SelectedProjectId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var project in Model.CenovusProjects)
+                                    {
+                                        <option value="@project.Id">@project.Name - @project.Description - @project.Facility.Name - @project.ProjectType.Name</option>
+                                    }
+                                </select>
+                            </div> *@
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Project Type:</label>
+                                <select id="projectTypeDropdown" asp-for="SelectedProjectTypeId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var type in Model.ProjectTypes)
+                                    {
+                                        <option value="@type.Id">@type.Name</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Line List Status:</label>
+                                <select id="lineListStatusDropdown" asp-for="SelectedLineListStatusId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var status in Model.LineListStatuses)
+                                    {
+                                        <option value="@status.Id">@status.Name - @status.Description</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Specification:</label>
+                                <select id="specificationsDropdown" asp-for="SelectedSpecificationId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var spec in Model.Specifications)
+                                    {
+                                        <option value="@spec.Id">@spec.Name - @spec.Description</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">EP:</label>
+                                <select id="epCompanyDropdown" asp-for="SelectedEPId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var ep in Model.EPs)
+                                    {
+                                        <option value="@ep.Id">@ep.Name - @ep.Description</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Document Number:</label>
+                                <select id="documentNumberDropdown" asp-for="SelectedDocumentNumberId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var document in Model.DocNumbers)
+                                    {
+                                        <option value="@document.Id">@document.DocumentNumber</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Row 3 -->
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Location:</label>
+                                <select id="locationDropdown" asp-for="SelectedLocationId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var location in Model.Locations)
+                                    {
+                                        <option value="@location.Id">@location.Name - @location.Description</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Project:</label>
+                                <select id="epProjectDropdown" asp-for="SelectedEPProjectId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var epProject in Model.EPProjects)
+                                    {
+                                        <option value="@epProject.Id">@epProject.Name - @epProject.Description</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <div class="form-check me-3">
+                                    <input asp-for="ShowOnlyActive" id="ShowOnlyActive" class="form-check-input" type="checkbox" />
+                                    <label class="form-check-label">ONLY SHOW ACTIVE</label>
+                                </div>
+                                <div class="form-check">
+                                    <input asp-for="ShowDrafts" class="form-check-input" type="checkbox" checked="@(Model.ShowDrafts ? "checked" : null)" />
+                                    <label class="form-check-label">Show Drafts</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Row 4 -->
+                        <div class="row mb-1">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">Area:</label>
+                                <select asp-for="SelectedAreaId" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var area in Model.Areas)
+                                    {
+                                        <option value="@area.Id">@area.Name - @area.Description</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-center">
+                                <label class="me-2 fw-bold w-50">MIN:</label>
+                                <select asp-for="SelectedModularID" class="me-4 form-select">
+                                    <option value="">-- Select --</option>
+                                    @foreach (var min in Model.ModularDetails)
+                                    {
+                                        <option value="@min.Name">@min.Value</option>
+                                    }
+                                </select>
+                            </div>
+
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="row align-items-center mb-2">
+                            <div class="col">
+                                <div class="message red text-danger" id="validationMsg" style="margin: 0px; visibility: hidden; display: none;">
+                                    <span><b>Required Field</b> : Facility is required for a Line List search.</span>
+                                </div>
+                            </div>
+
+                            <div class="col-auto text-end">
+                                <button type="reset" class="btn btn-outline-secondary me-2">
+                                    <i class="fas fa-times"></i> Clear Criteria
+                                </button>
+                                <button type="button" id="btnSearch" class="btn btn-primary">
+                                    <i class="fas fa-search"></i> Search
+                                </button>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+            <hr />
+            <div class="d-flex align-items-center col-12 mb-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    @if (Model.CanAdd)
+                    {
+                        <button class="ms-2 btn btn-primary" id="btnCreateNew">
+                            <i class="fas fa-plus"></i> ADD NEW LINE LIST
+                        </button>
+                    }
+                </div>
+
+                <div class="d-flex align-items-center ms-auto">
+                    <button id="exportExcel" class="btn btn-primary border-end me-2">
+                        <i class="fas fa-file-excel"></i> EXPORT TO EXCEL
+                    </button>
+                    <form asp-action="GeneratePdf" method="post" target="_blank">
+                        <button type="submit" name="preview" value="true" class="btn btn-outline-secondary">Preview PDF</button>
+                        <button type="submit" name="preview" value="false" class="btn btn-primary ms-2">Download PDF</button>
+                    </form>
+                </div>
+            </div>
+            <table id="dataTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th width="120"><button id="toggleFilters" class="btn-primary custom-icon-hover"><i class="fas fa-search"></i></button> Actions</th>
+                        <th width="100">Document Number</th>
+                        <th width="25">Rev</th>
+                        <th width="50">Status</th>
+                        <th width="45">Facility</th>
+                        <th width="50">Project Type</th>
+                        <th width="25">EP</th>
+                        <th width="60">Project</th>
+                        <th width="30">Spec</th>
+                        <th width="50">Location</th>
+                        <th width="30">Area</th>
+                        <th width="60">Created Date</th>
+                        <th width="60">Issue Date</th>
+                        <th width="170">Description</th>
+                        <th width="30">MIN</th>
+                    </tr>
+                    <tr id="searchInputs" class="filter-row">
+                        <th></th> <!-- Actions column (no search) -->
+                        <th><input type="text" class="form-control" placeholder="Document Number" /></th>
+                        <th><input type="text" class="form-control" placeholder="Rev" /></th>
+                        <th><input type="text" class="form-control" placeholder="Status" /></th>
+                        <th><input type="text" class="form-control" placeholder="Facility" /></th>
+                        <th><input type="text" class="form-control" placeholder="Project Type" /></th>
+                        <th><input type="text" class="form-control" placeholder="EP" /></th>
+                        <th><input type="text" class="form-control" placeholder="Project" /></th>
+                        <th><input type="text" class="form-control" placeholder="Spec" /></th>
+                        <th><input type="text" class="form-control" placeholder="Location" /></th>
+                        <th><input type="text" class="form-control" placeholder="Area" /></th>
+                        <th><input type="text" class="form-control" placeholder="Created Date" /></th>
+                        <th><input type="text" class="form-control" placeholder="Issue Date" /></th>
+                        <th><input type="text" class="form-control" placeholder="Description" /></th>
+                        <th><input type="text" class="form-control" placeholder="MIN" /></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Create/Update -->
+<div class="modal fade" id="LineListCreateModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title page-header"></h5>
+                <button type="button" class="close" data-bs-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body" id="modalContent"></div>
+        </div>
+    </div>
+</div>
+
+<!-- MODIFIED: Added Revert to Draft Modal -->
+<div class="modal fade" id="revertToDraftModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Revert to Draft</h5>
+                <button type="button" class="close" data-bs-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="revertFromStatus">From Status:</label>
+                    <input type="text" id="revertFromStatus" class="form-control" readonly />
+                </div>
+                <div class="form-group">
+                    <label for="revertToStatus">To Status:</label>
+                    <select id="revertToStatus" class="form-control"></select>
+                    <div id="revertToStatusValidation" class="text-danger" style="display:none;">Please select a status.</div>
+                </div>
+                <div id="revertErrorMsg" class="text-danger" style="display:none;"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnRevertCancel" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btnRevertSave" class="btn btn-primary">Save</button>
+
+
+              
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal for UpRev -->
+
+<div class="modal fade" id="upRevModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Up-Rev Line List</h5>
+                <button type="button" class="close" data-bs-dismiss="modal">×</button>
+            </div>
+            <div class="modal-body" id="upRevModalContent"></div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            initializeDataTable();
+            table.on('draw', function () { updateMoveButtons(); });
+            setupEventHandlers();
+            if ($("#showActiveOnly").is(":checked")) {
+                filterActiveRecords();
+            }
+            var autoSearch = @Json.Serialize(Model.AutoSearch);
+            console.log("AutoSearch value: ", autoSearch);
+
+            // Handle search button click
+            $('#btnSearch').on('click', function (e) {
+                e.preventDefault();
+
+               const facilityId = $('#facilityDropdown').val();
+                if (!facilityId || facilityId === '') {
+                    $('#validationMsg').css({ visibility: 'visible', display: 'block' });
+                    return;
+                } else {
+                    $('#validationMsg').css({ visibility: 'hidden', display: 'none' });
+                }
+
+                let formData = $('form').serialize();
+
+                $.ajax({
+                    url: '@Url.Action("SearchResult", "LineList")',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        let table = $('#dataTable').DataTable();
+                        table.clear();
+
+                        $.each(response, function (index, item) {
+                            table.row.add(item);
+                        });
+
+                        table.draw();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error fetching data:", error);
+                    }
+                });
+            });
+
+            // Dependent dropdowns
+            $('#documentNumberDropdown, #epProjectDropdown, #locationDropdown, #lineListStatusDropdown, #epCompanyDropdown, #specificationsDropdown, #projectTypeDropdown, #cenovusProjectDropdown, #facilityDropdown')
+                .change(function () {
+                    loadDependentDropdowns($(this).attr("id")); // Pass the ID of the changed dropdown
+                });
+
+            // Update Modular dropdown when dependent dropdowns change
+            $('#facilityDropdown, #projectTypeDropdown, #epCompanyDropdown, #epProjectDropdown, #cenovusProjectDropdown')
+                .change(function () {
+                    updateModularDropdown();
+                });
+
+            // Auto-search if coming from EpProject
+            if (autoSearch) {
+                console.log("Triggering auto-search");
+                $('#btnSearch').trigger('click');
+            }
+
+            // Track form changes (for other buttons, kept minimal here)
+            updateHiddenChange();
+            $('#lineListForm input, #lineListForm select').on('change', updateHiddenChange);
+        });
+
+        function loadDependentDropdowns(changedDropdownId) {
+            var requestData = {
+                facilityId: $('#facilityDropdown').val(),
+                cenovusProjectId: $('#cenovusProjectDropdown').val(),
+                projectTypeId: $('#projectTypeDropdown').val(),
+                specificationsId: $('#specificationsDropdown').val(),
+                epCompanyId: $('#epCompanyDropdown').val(),
+                lineListStatusId: $('#lineListStatusDropdown').val(),
+                locationId: $('#locationDropdown').val(),
+                epProjectId: $('#epProjectDropdown').val(),
+                documentNumberId: $('#documentNumberDropdown').val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("GetDependentDropdowns", "DropdownCommon")',
+                type: 'GET',
+                data: requestData,
+                success: function (response) {
+                    updateDropdown('#documentNumberDropdown', response.documentNumbers, changedDropdownId);
+                    updateDropdown('#epProjectDropdown', response.epProjects, changedDropdownId);
+                    updateDropdown('#locationDropdown', response.locations, changedDropdownId);
+                    updateDropdown('#specificationsDropdown', response.specifications, changedDropdownId);
+                    updateDropdown('#cenovusProjectDropdown', response.cenovusProjects, changedDropdownId);
+                },
+                error: function () {
+                    alert("Failed to load dependent dropdowns.");
+                }
+            });
+        }
+
+        function updateDropdown(dropdownId, data, changedDropdownId) {
+            var dropdown = $(dropdownId);
+            var currentValue = dropdown.val(); // Store the selected value
+
+            dropdown.empty().append('<option value="">-- Select --</option>');
+
+            $.each(data, function (index, item) {
+                dropdown.append($('<option></option>').val(item.id).text(item.name + " - " + (item.description || "")));
+            });
+
+            // Restore previously selected value **ONLY** if it's NOT the dropdown that triggered the change
+            if (dropdownId === '#' + changedDropdownId) {
+                dropdown.val(currentValue);
+            }
+        }
+
+        // Hide the search toggle in datatable
+        $('.filter-row').hide();
+
+        // Toggle filter button click
+        $('#toggleFilters').click(function () {
+            $('.filter-row').toggle();
+        });
+
+        function filterActiveRecords() {
+            var showActiveOnly = $('#showActiveOnly').prop('checked');
+
+            if (showActiveOnly) {
+                table.column(3).search("^Yes$", true, false).draw();
+            } else {
+                table.column(3).search("").draw();
+            }
+        }
+
+        // Function to update the Modular dropdown
+        function updateModularDropdown() {
+            let facilityId = $('#facilityDropdown').val() || '';
+            let projectTypeId = $('#projectTypeDropdown').val() || '';
+            let epCompanyId = $('#epCompanyDropdown').val() || '';
+            let epProjectId = $('#epProjectDropdown').val() || '';
+            let cenovusProjectId = $('#cenovusProjectDropdown').val() || '';
+
+            $.ajax({
+                url: '@Url.Action("GetModularDetails", "LineList")',
+                type: 'GET',
+                data: {
+                    facilityId: facilityId,
+                    projectTypeId: projectTypeId,
+                    epCompanyId: epCompanyId,
+                    epProjectId: epProjectId,
+                    cenovusProjectId: cenovusProjectId
+                },
+                success: function (response) {
+                    let modularDropdown = $('#modularDropdown');
+                    modularDropdown.empty();
+                    modularDropdown.append('<option value="">-- Select --</option>');
+
+                    $.each(response, function (index, item) {
+                        modularDropdown.append('<option value="' + item.name + '">' + item.value + '</option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching modular details:", error);
+                }
+            });
+        }
+
+               function initializeDataTable() {
+            let tableHeight = window.innerHeight - 150;
+
+            window.table = $('#dataTable').DataTable({
+                dom: 'Brtlip',
+                orderCellsTop: true,
+                order: [[1, 'asc']],
+                scrollY: 'calc(100vh - 650px)',
+                scrollX: true,
+                scrollCollapse: true,
+                paging: true,
+                pageLength: 100,
+                autoWidth: false,
+                responsive: true,
+                fixedHeader: true,
+                select: { style: 'single' },
+                buttons: [{
+                    extend: 'excel',
+                    text: 'Export to Excel',
+                    title: null,
+                    filename: 'LineLists',
+                    customize: customizeExcelExport,
+                    className: 'btn btn-primary export-button',
+                    exportOptions: {
+                        columns: ":not(:first-child)",
+                        modifier: {
+                            search: "applied",
+                            order: "applied",
+                            selected: null
+                        }
+                    }
+                }],
+                columns: [
+                    { data: null }, // Actions column (custom rendered below)
+                    { data: "documentNumber" },
+                    { data: "documentRevision" },
+                    { data: "lineListStatusName" },
+                    { data: "facilityName" },
+                    { data: "projectTypeName" },
+                    { data: "epCompanyName" },
+                    { data: "epProjectName" },
+                    { data: "specificationName" },
+                    { data: "locationName" },
+                    { data: "areaName" },
+                    { data: "createdOn" },
+                    { data: "issuedOn" },
+                    { data: "description" },
+                    { data: "modularId" }
+                ],
+                columnDefs: [
+                    {
+                        targets: 0,
+                        orderable: false,
+                        searchable: false,
+                        width: '120px',
+                        render: function (data, type, row) {
+                            let buttons = `
+                                <button class="btn btn-sm btn-outline-primary btn-redo-search" data-id="${row.id}" title="Redo Search">
+                                    <i class="fas fa-redo"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-primary btn-manage-line-list" data-id="${row.id}" title="Manage Lines">
+                                    <i class="fas fa-list-ul"></i>
+                                </button>`;
+
+                            if (row.canEdit) {
+                                const disabled = row.canBeUpReved ? '' : 'disabled';
+                                const cssClass = row.canBeUpReved ? 'text-danger' : '';
+                                buttons += `
+                                    <button class="btn btn-sm btn-outline-primary btn-uprev" data-id="${row.id}"
+                                        data-newhasEpCompanyAlpha="${row.newHasEpCompanyAlpha}"
+                                        data-newisEpActive="${row.newIsEpActive}"
+                                        data-newEpCompanyName="${row.newEpCompanyName}"
+                                        data-isHighestRev="${row.isHighestRev}"
+                                        data-isIssued="${row.isIssued}"
+                                        data-hasLines="${row.hasLines}"
+                                        data-isCenovusAdmin="true"
+                                        data-isEpLeadEngineer="true"
+                                        data-isEpDataEntry="true"
+                                        title="UpRev Line List"
+                                        ${disabled}>
+                                        <i class="fas fa-thumbs-up ${cssClass}"></i>
+                                    </button>`;
+                            }
+
+                            buttons += `
+                                <button class="btn btn-sm btn-outline-primary btn-update" data-id="${row.id}" data-documentNumber="${row.documentNumber}" title="Line List Details">
+                                    <i class="fas fa-file-import"></i>
+                                </button>`;
+
+                            return buttons;
+                        }
+                    },
+                    {
+                        targets: [11, 12], // CreatedOn and IssuedOn
+                        render: function (data) {
+                            return formatDate(data);
+                        }
+                    }
+                ],
+                initComplete: function () {
+                    let table = this;
+                    this.api().columns().every(function (index) {
+                        if (index === 0) return; // Skip Actions column
+                        $('input', $('#searchInputs th').eq(index)).on('keyup change', function () {
+                            table.api().column(index).search(this.value).draw();
+                        });
+                    });
+
+                    // Initialize tooltips after table is drawn
+                    $('[data-bs-toggle="tooltip"]').tooltip();
+                }
+            });
+        }
+
+
+        function formatDate(dateString) {
+            if (!dateString) return ''; // Return empty if date is null or undefined
+
+            let date = new Date(dateString);
+            if (isNaN(date)) return dateString; // If the date is invalid, return the original string
+
+            let day = String(date.getDate()).padStart(2, '0');
+            let month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+            let year = date.getFullYear();
+
+            return `${year}-${month}-${day}`; // Format: YYYY-MM-DD
+        }
+
+         function validate() {
+            var valid = true;
+
+            console.log($("#DocumentNumberUpdate").val());
+            console.log( $('#epCompanyDropdownUpdate').val());
+            console.log( $('#epProjectDropdownUpdate').val());
+            console.log( $('#specificationsDropdownUpdate').val());
+
+            //Document Number, Status, EP, EP Project, Default Specification
+
+            if (isNullOrEmpty($("#DocumentNumberUpdate").val()))
+                valid = false;
+            if (isNullOrEmpty($('#epCompanyDropdownUpdate').val()))
+                valid = false;
+            if (isNullOrEmpty($('#epProjectDropdownUpdate').val()))
+                valid = false;
+            if (isNullOrEmpty($('#specificationsDropdownUpdate').val()))
+                valid = false;
+
+            return valid;
+        }
+                function isNullOrEmpty(value) {
+            return value == null || value.trim() === "";
+        }
+        function setupEventHandlers() {
+            // ONLY SHOW ACTIVE fluids
+            $('#showActiveOnly').on('change', function () {
+                filterActiveRecords();
+            });
+
+            // Export to Excel
+            $('#exportExcel').on('click', function () {
+                table.button(0).trigger();
+            });
+
+            // Open Create LineList Modal
+            $('#btnCreateNew').on('click', function () {
+                openLineListModal('Create', '/LineList/Create', '');
+            });
+
+            // Open Update LineList Modal (Event Delegation)
+            $(document).on('click', '.btn-update', function () {
+                let lineListRevisionId = $(this).data("id");
+                let documentNumber = $(this).data("documentnumber");
+                openLineListModal('Update', '/LineList/Update/' + lineListRevisionId, documentNumber);
+            });
+
+            // Open UpRev Modal
+            $(document).on('click', '.btn-uprev', function () {
+                let lineListRevisionId = $(this).data("id");
+                let newHasEpCompanyAlpha = $(this).data("newhasEpCompanyAlpha") === true;
+                let newIsEpActive = $(this).data("newisEpActive") === true;
+                let newEpCompanyName = $(this).data("newEpCompanyName");
+                let isHighestRev = $(this).data("isHighestRev") === true;
+                let isIssued = $(this).data("isIssued") === true;
+                let hasLines = $(this).data("hasLines") === true;
+                let isCenovusAdmin = $(this).data("isCenovusAdmin") === true;
+                let isEpLeadEngineer = $(this).data("isEpLeadEngineer") === true;
+                let isEpDataEntry = $(this).data("isEpDataEntry") === true;
+
+                // Permission and condition checks
+                if (!isHighestRev) {
+                    alert("UpRev is only available for the highest revision.");
+                    return;
+                }
+                if (!isIssued) {
+                    alert("UpRev is only available for issued revisions.");
+                    return;
+                }
+                if (!hasLines) {
+                    alert("UpRev is only available for revisions with lines.");
+                    return;
+                }
+                if (!(isCenovusAdmin || isEpLeadEngineer || isEpDataEntry)) {
+                    alert("You do not have permission to perform UpRev.");
+                    return;
+                }
+                if (!newHasEpCompanyAlpha) {
+                    alert('UpRev not available. Please contact the Cenovus Line List Administrator to setup an EP Alpha for EP: ' + newEpCompanyName);
+                    return;
+                }
+                if (!newIsEpActive) {
+                    alert('UpRev is not available. Please contact the Cenovus Line List Administrator to activate EP: ' + newEpCompanyName);
+                    return;
+                }
+
+                showLoading();
+                $.ajax({
+                    url: '/LineList/GetUpRevData',
+                    type: 'GET',
+                    data: { id: lineListRevisionId },
+                    success: function (response) {
+                        $("#upRevModalContent").html(response);
+                        $('#upRevModal').modal('show');
+
+                        // Handle status change to update next revision
+                        $('#cboNextStatus').on('change', function () {
+                            let newStatusId = $(this).val();
+                            if (newStatusId) {
+                                $.ajax({
+                                    url: '/LineList/GetNextRevision',
+                                    type: 'GET',
+                                    data: { lineListRevisionId: lineListRevisionId, newStatusId: newStatusId },
+                                    success: function (response) {
+                                        if (response.success) {
+                                            $('#lblNextRevision').text(response.nextRevision);
+                                        } else {
+                                            alert(response.errorMessage || "Error calculating next revision.");
+                                        }
+                                    },
+                                    error: function () {
+                                        alert("Error calculating next revision.");
+                                    }
+                                });
+                            }
+                        });
+
+                        // Save UpRev
+                        $('#btnUpRevSave').on('click', function () {
+                            let newStatusId = $('#cboNextStatus').val();
+                            if (!newStatusId) {
+                                $('#cboNextStatusValidation').show();
+                                return;
+                            }
+
+                            showLoading();
+                            $.ajax({
+                                url: '/LineList/UpRevLineList',
+                                type: 'POST',
+                                data: { lineListRevisionId: lineListRevisionId, newStatusId: newStatusId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        $('#upRevModal').modal('hide');
+                                        requeryAfterUpRev();
+                                    } else {
+                                        alert(response.errorMessage || "Error performing UpRev.");
+                                    }
+                                },
+                                complete: hideLoading,
+                                error: function () {
+                                    hideLoading();
+                                    alert("Error performing UpRev.");
+                                }
+                            });
+                        });
+                    },
+                    complete: hideLoading,
+                    error: function () {
+                        hideLoading();
+                        alert("Error loading UpRev data.");
+                    }
+                });
+            });
+
+            // Redo Search Button Click
+            $(document).on('click', '.btn-redo-search', function () {
+                let lineListRevisionId = $(this).data("id");
+                $.ajax({
+                    url: '/LineList/RedoSearch',
+                    type: 'POST',
+                    data: { id: lineListRevisionId },
+                    success: function (response) {
+                        if (response.success) {
+                            window.location.href = response.redirectUrl;
+                        } else {
+                            alert(response.errorMessage || "Error performing redo search.");
+                        }
+                    },
+                    error: function () {
+                        alert("Error performing redo search.");
+                    }
+                });
+            });
+            $(document).on('click', '.btn-manage-line-list', function () {
+                let lineListRevisionId = $(this).data("id");
+                window.location.href = '/LineCollection/Index?LineListRevisionId=' + lineListRevisionId;
+            });
+
+            // Delete LineList
+            $(document).on('click', '.btn-delete', function () {
+                let fluidId = $(this).data("id");
+                if (confirm("Are you sure you want to delete this fluid?")) {
+                    $.ajax({
+                        url: "/LineList/Delete/" + fluidId,
+                        type: "DELETE",
+                        success: function (response) {
+                            if (response.success) {
+                                location.reload();
+                            } else {
+                                alert(response.ErrorMessage || "Error deleting fluid.");
+                            }
+                        },
+                        error: function (error) {
+                            console.error("Error deleting fluid:", error);
+                        }
+                    });
+                }
+            });
+
+          $(document).on('click', '#btnPrintForReference', function(e) {
+          e.preventDefault();
+          const id = $('#hdnRevisionId').val();
+          $.post('@Url.Action("PrintForReference", "LineList")', { id: id })
+           .done(resp => {
+             if (resp.success) {
+               window.open('@Url.Action("PrintForReferenceResult", "LineList")?id=' + resp.id, '_blank');
+               $('#LineListCreateModal').modal('hide');
+             } else alert(resp.errorMessage);
+           })
+           .fail(() => alert('Error printing for reference.'));
+        });
+
+            // Submit Create/Update Form
+            $(document).on('click', '#btnSaveLineList', function (e) {
+                e.preventDefault();
+                let valid =validate();
+
+                const validationMsg = document.getElementById('validationMsgUpdate');
+                if(!valid)
+                {
+                     validationMsg.style.display = 'block';
+                     validationMsg.style.visibility = 'visible';
+                     return;
+                }
+
+                let form = $("#lineListForm");
+
+                console.log("Form is valid, submitting...");
+                let formData = form.serialize();
+                console.log("Sending data:", formData);
+                $.ajax({
+                    url: form.attr("action"),
+                    type: "POST",
+                    data: form.serialize(),
+                    success: function (response) {
+                        console.log("Server response:", response);
+                        if (response.success) {
+                            $('#LineListCreateModal').modal('hide');
+                            location.reload();
+                        } else {
+                            alert(response.errorMessage || "Error saving line list.");
+                        }
+                    },
+                    error: function (error) {
+                        console.error("Error submitting form:", error);
+                        alert("An error occurred while saving the line list.");
+                    }
+                });
+
+            });
+
+            // Print And Issue Button in Modal
+            $(document).on('click', '#btnPrintAndIssue', function (e) {
+            e.preventDefault();
+            // confirm save
+            if (!confirm("Would you like to save changes before printing and issuing?")) {
+                return;
+            }
+            // grab the current revision id
+            var revisionId = $('#hdnRevisionId').val();
+            if (!revisionId) {
+                alert("Please save the line list first.");
+                return;
+            }
+            // POST to your PrintAndIssue endpoint
+            $.ajax({
+                url: '@Url.Action("PrintAndIssue", "LineList")',
+                type: 'POST',
+                data: { id: revisionId },
+                success: function (response) {
+                    if (response.success) {
+                        // open the PDF in a new window
+                        var pdfUrl = '@Url.Action("PrintAndIssueResult", "LineList")?id=' + response.id;
+                        window.open(pdfUrl, '_blank');
+                        $('#LineListCreateModal').modal('hide');
+                        $('#btnSearch').trigger('click'); // refresh table
+                    } else {
+                         var raw = response.errorMessage || "Unknown error.";
+                         var errors = [];
+                         if (raw.indexOf(";") > -1) {
+                         errors = raw.split(";").map(function(s) { return s.trim(); }).filter(Boolean);
+                         } else {
+                          errors = raw.split("\n").map(function(s) { return s.trim(); }).filter(Boolean);
+                         }
+                         var $ul = $('#printIssueErrorList');
+                        $ul.empty();
+                        errors.forEach(function(msg) {
+                            $ul.append('<li>' + msg + '</li>');
+                        });
+                         // 3) when “LINE VALIDATION” is clicked, go to LineCollection/Index for this revision
+                        $('#btnLineValidation')
+                          .off('click') // unbind any previous handler
+                          .on('click', function() {
+                            // redirect to LineCollection Index, passing this revisionId
+                            window.location.href = '/LineCollection/Index?LineListRevisionId=' + revisionId;
+                          });
+
+                        // 4) show the modal
+                        $('#printIssueErrorModal').modal('show');
+                    }
+                },
+                error: function () {
+                    alert("Error performing Print and Issue.");
+                }
+            });
+        });
+
+            // Revert to Draft Button Click
+            $(document).on('click', '#btnRevertToDraft', function (e) {
+                e.preventDefault();
+                let revisionId = $('#lineListRevisionId').val();
+                if (!revisionId) {
+                    alert("No revision ID found. Please save the line list first.");
+                    return;
+                }
+
+                // Show loading and fetch current status
+                showLoading();
+                $.ajax({
+                    url: '/LineList/GetRevertToDraftData',
+                    type: 'GET',
+                    // MODIFIED: Updated parameter name to match controller action
+                    data: { id: revisionId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#revertFromStatus').val(response.fromStatus);
+                            $('#revertToStatus').html('<option value="' + response.toStatusId + '">' + response.toStatusName + '</option>');
+                            $('#revertToDraftModal').modal('show');
+                        } else {
+                            alert(response.errorMessage || "Error loading revert data.");
+                        }
+                    },
+                    complete: hideLoading,
+                    error: function () {
+                        hideLoading();
+                        alert("Error loading revert data.");
+                    }
+                });
+            });
+
+            // Save Revert to Draft
+            $(document).on('click', '#btnRevertSave', function (){
+            // $('#btnRevertSave').on('click', function () {
+                console.log("Revert Save button clicked");
+                let revisionId = $('#lineListRevisionId').val();
+                let newStatusId = $('#revertToStatus').val();
+                console.log("revisionId:", revisionId, "newStatusId:", newStatusId);
+
+                if (!newStatusId) {
+                    $('#revertToStatusValidation').show();
+                    return;
+                }
+
+                showLoading();
+                $.ajax({
+                    url: '/LineList/RevertToDraft',
+                    type: 'POST',
+                    data: { lineListRevisionId: revisionId, newStatusId: newStatusId },
+                    success: function (response) {
+                        if (response.success) {
+                            $('#revertToDraftModal').modal('hide');
+                            alert("Revert to Draft Successful. Line status has been switched to " + $('#revertToStatus option:selected').text());
+                            location.reload(); // Refresh to reflect changes
+                        } else {
+                            $('#revertErrorMsg').text(response.errorMessage || "Error reverting to draft.").show();
+                            showToast("Error reverting to draft", "error");
+                        }
+                    },
+                    complete: hideLoading,
+                    error: function () {
+                        hideLoading();
+                        $('#revertErrorMsg').text("Error reverting to draft.").show();
+                         showToast("Error reverting to draft", "error");
+                    }
+                });
+            });
+            //Discard Draft
+
+                       $(document).on('click', '#btnDiscardDraft', function (e) {
+                e.preventDefault();
+                let revisionId = $('#lineListRevisionId').val();
+                if (!revisionId) {
+                    alert("No revision ID found. Please save the line list first.");
+                    return;
+                }
+
+                    if (confirm('Are you sure you want to discard this draft, and delete it permanently?')) {
+                    $.ajax({
+                        url: "/LineList/DiscardDraft/" + revisionId,
+                        type: "DELETE",
+                        success: function (response) {
+                            if (response.success) {
+                                showToast("Discarded Draft Successfully", "success");
+                                location.reload();
+                            } else {
+                                alert(response.errorMessage || "Error deleting area.");
+                            }
+                        },
+                        error: function (error) {
+                            console.error("Error deleting area:", error);
+                        }
+                    });
+                }
+            });
+
+           // Print for Review
+            $(document).on('click', '#btnPrintForReview', function (e) {
+                e.preventDefault();
+
+               var editable =  $('#hiddenReadOnly').val() == "false";
+
+                    var id = $('#lineListRevisionId').val();
+                    if (!id) {
+                        alert("Please save the line list first.");
+                        return;
+                    }
+                     $.ajax({
+                        url: '@Url.Action("PrintForReview", "LineList")',
+                        type: 'POST',
+                        data: { id: id },
+                        success: function (resp) {
+                            if (resp.success) {
+                                window.open('@Url.Action("PrintForReviewResult", "LineList")?id=' + resp.id, '_blank');
+                                $('#LineListCreateModal').modal('hide');
+                            } else {
+                                alert(resp.errorMessage);
+                            }
+                        },
+                        error: function () { alert("Error printing for review."); }
+                    });
+
+            });
+        function toggleBlockInputs() {
+            if ($('#simpleBlock').is(':checked')) {
+                $('#simpleInitialBlock input').prop('disabled', false);
+                $('#complexInitialBlock input').prop('disabled', true);
+            } else if ($('#complexBlock').is(':checked')) {
+                $('#simpleInitialBlock input').prop('disabled', true);
+                $('#complexInitialBlock input').prop('disabled', false);
+            }
+        }
+
+        $(document).on('change', 'input[name="SelectedBlock"]', toggleBlockInputs);
+        $(document).on('change', 'input[name="SelectedBlock"]', toggleRequired);
+
+          function toggleRequired() {
+            var isdraft =  $('#isDraft').val();
+
+            if ($('#simpleBlock').is(':checked') && isdraft != 'True') {
+                $('.simple-required').show();
+                $('.complex-required').hide();
+            } else if ($('#complexBlock').is(':checked')  && isdraft != 'True') {
+                 $('.simple-required').hide();
+                $('.complex-required').show();
+            }
+        }
+
+        }
+
+
+        function requeryAfterUpRev() {
+            showLoading();
+            let formData = $('form').serialize();
+
+            $.ajax({
+                url: '@Url.Action("SearchResult", "LineList")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    let table = $('#dataTable').DataTable();
+                    table.clear();
+
+                    $.each(response, function (index, item) {
+                        table.row.add(item);
+                    });
+
+                    table.draw();
+                    $('#ShowDrafts').prop('checked', true); // Ensure drafts are shown
+                },
+                complete: hideLoading,
+                error: function () {
+                    hideLoading();
+                    alert("Error refreshing table after UpRev.");
+                }
+            });
+        }
+        function saveAndPrint(url) {
+                var form = $('#lineListForm');
+                if (!form.valid()) { alert("Fix validation errors."); return; }
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    success: function (r) {
+                        if (!r.success) { alert(r.errorMessage); return; }
+                        var id = $('#hdnRevisionId').val();
+                        $.ajax({
+                            url: url,
+                            type: 'POST',
+                            data: { id: id },
+                            success: function (p) {
+                                if (p.success) {
+                                    var target = url.includes('Reference')
+                                        ? '@Url.Action("PrintForReferenceResult", "LineList")'
+                                        : '@Url.Action("PrintForReviewResult", "LineList")';
+                                    window.open(target + '?id=' + p.id, '_blank');
+                                    $('#LineListCreateModal').modal('hide');
+                                    $('#btnSearch').trigger('click');
+                                } else {
+                                    alert(p.errorMessage);
+                                }
+                            },
+                            error: function () { alert("Error during print."); }
+                        });
+                    },
+                    error: function () { alert("Error saving before print."); }
+                });
+            }
+
+        function updateHiddenChange() {
+            let value = $('#lineListStatusDropdown').val() + ',' + $('#DocumentNumber').val();
+            $('#hiddenChange').val(value);
+        }
+
+        function showLoading() {
+            $('body').append('<div class="loading-overlay"><div class="spinner-border" role="status"></div></div>');
+        }
+
+        function hideLoading() {
+            $('.loading-overlay').remove();
+        }
+
+        function openLineListModal(action, url, docNumber) {
+            let modal = $('#LineListCreateModal');
+            let title = action === 'Create' ? 'Add a New Line List' : 'Line List: ' + docNumber;
+
+            $.get(url, function (response) {
+                $("#modalContent").html(response);
+                $("#isDraft").val(   $("#modalContent #isDraft").val()   );
+                $("#isIssued").val(  $("#modalContent #isIssued").val()  );
+                $("#isEpUser").val(  $("#modalContent #isEpUser").val()  );
+                $("#isEpAdmin").val( $("#modalContent #isEpAdmin").val() );
+                $("#isCenovusAdmin").val( $("#modalContent #isCenovusAdmin").val() );
+                $(".modal-title").text(title);
+                $.validator.unobtrusive.parse("#modalContent");
+                modal.modal('show');
+            }).fail(function () {
+                alert("Error loading form.");
+            });
+        }
+
+        function updateMoveButtons() {
+            // Placeholder for move buttons logic if needed
+        }
+
+        function formatDate(date) {
+            if (!date) return '';
+            let d = new Date(date);
+            return d.toLocaleDateString();
+        }
+
+
+    </script>
+
+
+}

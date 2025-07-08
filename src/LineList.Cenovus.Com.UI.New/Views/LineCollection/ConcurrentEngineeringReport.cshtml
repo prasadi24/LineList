@@ -1,0 +1,340 @@
+﻿@using LineList.Cenovus.Com.Domain.DataTransferObjects
+@model ConcurrentEngineeringReportViewModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLine.cshtml";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
+<div class="mt-md-0">
+    <div class="row">
+        <div class="card mb-md-1">
+            <div class="card-header">
+                <h5 class="mb-3 page-header">@Model.Title</h5>
+                <hr />
+                <div class="d-flex justify-content-between align-items-center col-12 mb-2">
+                    <div class="d-flex align-items-center">
+                        @if (User.IsInRole("CenovusAdmin"))
+                        {
+                            <span class="text-danger font-weight-bold me-3">
+                                Note: Changing a Line Revision to not Active cannot be manually un-done and should be performed with caution.
+                            </span>
+                        }
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button id="exportExcel" class="btn btn-primary me-2">
+                            <i class="fas fa-file-excel"></i> EXPORT TO EXCEL
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="table">
+                <table id="concurrentReportGrid" class="table table-striped table-bordered" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Line</th>
+                            <th>Specification</th>
+                            <th>Line List Actions</th>
+                            <th>Document Number</th>
+                            <th>Line List Status</th>
+                            <th>LDT Issue Date</th>
+                            <th>Rev.</th>
+                            <th>EP</th>
+                            <th>Line Actions</th>
+                            <th>Line Num.</th>
+                            <th>Line Rev.</th>
+                            <th>Line Status</th>
+                            <th>P/C</th>
+                            <th>Active</th>
+                            @if (User.IsInRole("CenovusAdmin"))
+                            {
+                                <th>Toggle Active</th>
+                            }
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            @if (User.IsInRole("CenovusAdmin"))
+            {
+                <div class="card-footer text-end">
+                    <button id="saveChanges" class="btn btn-success me-2">
+                        <i class="fas fa-save"></i> Save
+                    </button>
+                    <button id="cancelChanges" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Line Details and Line List Revision -->
+<div class="modal fade" id="lineDetailsModal" tabindex="-1" role="dialog" aria-labelledby="lineDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="lineDetailsModalLabel">Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <iframe id="lineDetailsFrame" style="width:100%; height:600px; border:none;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var activeSettings = []; // Store IsActive changes
+            var groupColumn = 9; // Line Num. column for grouping (zero-based index: Line Num. is 10th visible column)
+            var isCenovusAdmin = '@User.IsInRole("CenovusAdmin")' === 'True';
+
+            var table = $('#concurrentReportGrid').DataTable({
+                dom: 'rtip',
+                orderCellsTop: true,
+                order: [[1, 'asc']],
+                paging: true,
+                pageLength: 250,
+                autoWidth: false,
+                responsive: true,
+                fixedHeader: true,
+                scrollY: '53vh',
+                scrollX: true,
+                scrollCollapse: true,
+                columnDefs: [
+                    { targets: groupColumn, visible: false }, // Hide group column (Line Num.)
+                    { targets: -1, orderable: false, searchable: false } // Disable sorting/searching for Toggle Active column
+                ],
+                order: [[groupColumn, 'asc']],
+                drawCallback: function (settings) {
+                    var api = this.api();
+                    var rows = api.rows({ page: 'current' }).nodes();
+                    var last = null;
+
+                    api.column(groupColumn, { page: 'current' }).data().each(function (group, i) {
+                        if (last !== group) {
+                            $(rows).eq(i).before(
+                                `<tr class="group expanded" data-group="${group}">
+                                    <td colspan="${isCenovusAdmin ? 15 : 14}" class="group-row">
+                                        <button class="toggle-group btn btn-sm btn-light me-2">-</button>
+                                        <strong>Line: ${group}</strong>
+                                    </td>
+                                </tr>`
+                            );
+                            last = group;
+                        }
+                    });
+
+                    $(".group").each(function () {
+                        $(this).nextUntil(".group").show();
+                    });
+                }
+            });
+
+            // Prevent sorting when clicking on a group row
+            $('#concurrentReportGrid tbody').on('click', '.group-row', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var groupRow = $(this).closest(".group");
+                var groupValue = groupRow.attr("data-group");
+                var isExpanded = groupRow.hasClass("expanded");
+
+                if (isExpanded) {
+                    groupRow.removeClass("expanded");
+                    groupRow.find('.toggle-group').text("+");
+                    groupRow.nextUntil(".group").hide();
+                } else {
+                    groupRow.addClass("expanded");
+                    groupRow.find('.toggle-group').text("-");
+                    groupRow.nextUntil(".group").show();
+                }
+            });
+
+            // Load data immediately based on lineListRevisionId
+            loadTableData();
+
+            function loadTableData() {
+                var lineListRevisionId = '@Model.LineListRevisionId';
+
+                if (lineListRevisionId === '@Guid.Empty.ToString()') {
+                    toastr.error("No Line List Revision ID available.");
+                    return;
+                }
+
+                $.ajax({
+                    url: "@Url.Action("GetConcurrentEngineeringLinesForLineList", "LineCollection")",
+                    type: "POST",
+                    data: { lineListRevisionId: lineListRevisionId },
+                    success: function (response) {
+                        if (response && Array.isArray(response)) {
+                            table.clear();
+                            $.each(response, function (index, item) {
+                                var row = [
+                                    item.shortLineNumber || '',
+                                    item.specification || '',
+                                    item.lineListRevisionId ? '<a href="javascript:void(0);" class="btn btn-sm btn-info" onclick="showLineListRevision(\'' + item.lineListRevisionId + '\')">View</a>' : '',
+                                    item.documentNumber || '',
+                                    item.lineListStatus || '',
+                                    item.issuedOn ? new Date(item.issuedOn).toISOString().split('T')[0] : '',
+                                    item.documentRevision || '',
+                                    item.ep || '',
+                                    (item.lineListStatusIsHardRevision && item.lineListStatusIsIssuedOfId || '@User.IsInRole("CenovusAdmin")' === 'True' ||
+                                     ('@ViewBag.ProjectId' ? '@User.Claims.Any(c => c.Type == "EpLeadEng" && c.Value == ViewBag.ProjectId.ToString())' === 'True' : false) ||
+                                     ('@ViewBag.ProjectId' ? '@User.Claims.Any(c => c.Type == "EpDataEntry" && c.Value == ViewBag.ProjectId.ToString())' === 'True' : false))
+                                     ? '<a href="javascript:void(0);" class="btn btn-sm btn-primary" onclick="showLineDetail(\'' + item.id + '\')">View</a>' : '',
+                                    item.lineNumber || '',
+                                    item.lineRevision || '',
+                                    item.lineStatus || '',
+                                    item.parentChild || '',
+                                    item.isActive ? 'Yes' : 'No'
+                                ];
+
+                                if (isCenovusAdmin) {
+                                    row.push(
+                                        '<input type="checkbox" class="toggle-active" data-id="' + item.id + '" ' + (item.isActive ? 'checked' : '') + ' ' + (item.isDraft ? 'disabled' : '') + ' />'
+                                    );
+                                }
+
+                                table.row.add(row);
+                            });
+                            table.draw();
+                        } else {
+                            showToast("Unexpected response format.");
+                        }
+                    },
+                    error: function (xhr, error, thrown) {
+                        showToast('Error loading data: ' + (xhr.responseJSON?.error || thrown));
+                    }
+                });
+            }
+
+            // Handle IsActive toggle
+            $('#concurrentReportGrid tbody').on('change', '.toggle-active', function () {
+                var $checkbox = $(this);
+                var lineRevisionId = $checkbox.data('id');
+                var isActive = $checkbox.is(':checked');
+
+                // Update activeSettings
+                var existing = activeSettings.find(item => item.lineRevisionId === lineRevisionId);
+                if (existing) {
+                    existing.isActive = isActive;
+                } else {
+                    activeSettings.push({ lineRevisionId: lineRevisionId, isActive: isActive });
+                }
+            });
+
+            // Save changes
+            $('#saveChanges').on('click', function () {
+                if (activeSettings.length === 0) {
+                    toastr.info("No changes to save.");
+                    return;
+                }
+                console.log(JSON.stringify(activeSettings));
+                $.ajax({
+                    url: '@Url.Action("ToggleActiveStatus", "LineCollection")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(activeSettings),
+                    success: function (response) {
+                        if (response.success) {
+                            toastr.success("Changes saved successfully.");
+                            activeSettings = [];
+                            loadTableData();
+                        } else {
+                            toastr.error(response.error || "Error saving changes.");
+                        }
+                    },
+                    error: function (xhr) {
+                        toastr.error("Error saving changes: " + (xhr.responseJSON?.error || xhr.statusText));
+                    }
+                });
+            });
+
+            // Cancel changes
+            $('#cancelChanges').on('click', function () {
+                activeSettings = [];
+                loadTableData();
+                toastr.info("Changes discarded.");
+            });
+
+            function showLineListRevision(lineListRevisionId) {
+                var url = '@Url.Action("Details", "LineList")' + '/' + lineListRevisionId;
+                $('#lineDetailsFrame').attr('src', url);
+                $('#lineDetailsModal').modal('show');
+            }
+
+            function showLineDetail(id) {
+                var url = '@Url.Action("Details", "LineCollection")' + '?lineRev=' + id;
+                $('#lineDetailsFrame').attr('src', url);
+                $('#lineDetailsModal').modal('show');
+            }
+
+            // Export to Excel
+            $('#exportExcel').on('click', async function () {
+                var workbook = new ExcelJS.Workbook();
+                var worksheet = workbook.addWorksheet("Concurrent Engineering Report");
+
+                // Define headers (excluding action columns and Toggle Active)
+                var headers = [
+                    "Line", "Specification", "Document Number", "Line List Status",
+                    "LDT Issue Date", "Rev.", "EP", "Line Num.", "Line Rev.",
+                    "Line Status", "P/C", "Active"
+                ];
+
+                let lastColumnIndex = headers.length;
+                let headerRow = worksheet.addRow(headers);
+
+                headerRow.eachCell((cell, colNumber) => {
+                    if (colNumber <= lastColumnIndex) {
+                        cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: '244C5A' }
+                        };
+                    }
+                });
+
+                let lastGroup = null;
+                var data = $('#concurrentReportGrid').DataTable().rows({ search: 'applied' }).data().toArray();
+                var groupColumnIndex = 7; // Line Num. column in filtered data (after removing actions columns)
+
+                data.forEach((row, index) => {
+                    let filteredRow = row.filter((_, i) => ![2, 8, (isCenovusAdmin ? 14 : 13)].includes(i)); // Remove Line List Actions, Line Actions, Toggle Active
+                    let groupValue = filteredRow[groupColumnIndex];
+
+                    if (groupValue !== lastGroup) {
+                        let groupRow = worksheet.addRow([`Line: ${groupValue}`]);
+                        worksheet.mergeCells(groupRow.number, 1, groupRow.number, lastColumnIndex);
+                        let mergedCell = worksheet.getCell(groupRow.number, 1);
+                        mergedCell.font = { bold: true };
+                        mergedCell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: 'D3D3D3' }
+                        };
+                        mergedCell.alignment = { horizontal: 'center' };
+                        lastGroup = groupValue;
+                    }
+
+                    worksheet.addRow(filteredRow);
+                });
+
+                worksheet.columns.forEach(column => {
+                    column.width = 20;
+                });
+
+                workbook.xlsx.writeBuffer().then(buffer => {
+                    let blob = new Blob([buffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    saveAs(blob, "Concurrent_Engineering_Report.xlsx");
+                });
+            });
+        });
+    </script>
+}

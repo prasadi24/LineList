@@ -1,0 +1,92 @@
+﻿@using LineList.Cenovus.Com.API.DataTransferObjects.NotesConfiguration
+@model NotesConfigurationAddDto
+
+<form asp-action="Create" id="notesConfigurationForm" enctype="multipart/form-data" method="post">
+    <div class="col-xl-12">
+        <div class="nav-align-top mb-4">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#details" type="button" role="tab">
+                         Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#audit-info" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <!-- Details Tab -->
+                <div class="tab-pane fade show active" id="details" role="tabpanel">
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Location:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="FacilityId" class="form-select flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.Facilities, "Id", "Name_dash_Description"))">
+                                <option value="">-- Select Facility --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="FacilityId" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Specification:</label>
+                        <div class="col-md-8 d-flex align-items-center">
+                            <select asp-for="SpecificationId" class="form-select flex-grow-1" style="max-width: calc(100% - 20px);" asp-items="@(new SelectList(ViewBag.Specifications, "Id", "Name_dash_Description"))">
+                                <option value="">-- Select Specification --</option>
+                            </select>
+                            <span class="text-danger ms-1" title="Required Field">*</span>
+                        </div>
+                        <div class="offset-md-4 col-md-8">
+                            <span asp-validation-for="SpecificationId" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <label class="col-md-4 text-black">Upload Notes Document:</label>
+                        <div class="col-md-8">
+                            <input type="file" name="uploadedFile" class="form-control" accept="application/pdf" required />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Audit Info Tab -->
+                <div class="tab-pane fade" id="audit-info" role="tabpanel">
+                
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Uploaded By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="UploadedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Upload Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="UploadedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified By:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedBy" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                    <div class="row mb-1">
+                        <label class="col-md-4 text-black">Last Modified Date:</label>
+                        <div class="col-md-8">
+                            <input asp-for="ModifiedOn" type="text" asp-format="{0:yyyy-MM-dd hh:mm:ss tt}" class="form-control-plaintext" readonly />
+                        </div>
+                    </div>
+                </div> <!-- End Audit Info Tab -->
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" id="btnSaveNotesConfiguration">Save</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
