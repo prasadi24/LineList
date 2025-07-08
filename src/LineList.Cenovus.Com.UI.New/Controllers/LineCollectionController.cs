@@ -584,8 +584,9 @@ namespace LineList.Cenovus.Com.UI.Controllers
             //    jacketed = true;
             //}
 
-            LineCollectionViewModel Model = new LineCollectionViewModel()
+            var model = new LineCollectionViewModel
             {
+                // 1. Lookup Lists
                 Areas = areas,
                 PipeSpecifications = pipeSpecifications,
                 SizeNpsPipes = sizeNpsPipes,
@@ -604,115 +605,107 @@ namespace LineList.Cenovus.Com.UI.Controllers
                 CsaClassLocations = csaClassLocations,
                 CsaHvpLvps = csaHvpLvps,
                 OperatingModes = operatingModes,
-
-                // Line Identification
-                LocationName = lineDetails.Line.Location != null ? lineDetails.Line.Location.Name : string.Empty,
-                CommodityName = lineDetails.Line.Commodity != null ? lineDetails.Line.Commodity.Name : string.Empty,
-                SpecificationName = lineDetails.Specification != null ? lineDetails.Specification.Name : string.Empty,
-                AreaId = lineDetails.AreaId.HasValue ? lineDetails.AreaId.Value : Guid.Empty,
-                PipeSpecificationId = lineDetails.PipeSpecificationId.HasValue ? lineDetails.PipeSpecificationId.Value : Guid.Empty,
-                SizeNpsPipeId = lineDetails.SizeNpsPipeId.HasValue ? lineDetails.SizeNpsPipeId.Value : Guid.Empty,
-                SequenceNumber = lineDetails.Line.SequenceNumber.ToString(),
-                Revision = lineDetails.Revision,
-                OriginatingPID = lineDetails.OriginatingPID,
-                IsChild = lineDetails.Line.ChildNumber > 0,
-                ModularId = lineDetails.Line.ModularId != null ? lineDetails.Line.ModularId : string.Empty,
-                LineRoutingFrom = primaryOpMode != null ? primaryOpMode.LineRoutingFrom : string.Empty,
-                OperatingModeNumber = primaryOpMode != null ? primaryOpMode.OperatingModeNumber : string.Empty,
-                OperatingModeId = primaryOpMode.OperatingModeId.HasValue ? primaryOpMode.OperatingModeId.Value : Guid.Empty,
-                OperatingModeIdDescription = primaryOpMode?.OperatingModeId.HasValue == true
-                ? operatingModes.FirstOrDefault(m => m.Id == primaryOpMode.OperatingModeId)?.Description
-                : "N/A",
-
-                //OperatingModeIdDescription = ,
-                LineRoutingTo = primaryOpMode != null ? primaryOpMode.LineRoutingTo : string.Empty,
-                LineRevisionStatus = lineDetails.LineStatus.Name != null ? lineDetails.LineStatus.Name : string.Empty,
-
-                // Process Attributes
-                OperatingPressurePipe = primaryOpMode != null ? primaryOpMode.OperatingPressurePipe : string.Empty,
-                OperatingTemp = primaryOpMode != null ? primaryOpMode.OperatingTemperaturePipe : string.Empty,
-                FluidPhaseId = primaryOpMode.FluidPhaseId.HasValue ? primaryOpMode.FluidPhaseId.Value : Guid.Empty,
-                FluidPhaseName = primaryOpMode != null ? primaryOpMode.FluidPhase != null ? primaryOpMode.FluidPhase.Name : string.Empty : string.Empty,
-                DesignPressure = lineDetails.DesignPressurePipe,
-                DesignTempMax = lineDetails.DesignTemperatureMaximumPipe,
-                DesignTempMin = lineDetails.DesignTemperatureMinimumPipe,
-                Notes = primaryOpMode != null ? primaryOpMode.Notes : string.Empty,
-                ExpansionTemp = lineDetails.ExpansionTemperature,
-                UpsetPressure = lineDetails.UpsetPressurePipe,
-                UpsetTemp = lineDetails.UpsetTemperaturePipe,
-                //PressureProtectionId = primaryOpMode.PressureProtectionId.HasValue ? primaryOpMode.PressureProtectionId.Value : Guid.Empty,
-                PressureProtectionName = primaryOpMode != null ? primaryOpMode.PressureProtection != null ? primaryOpMode.PressureProtection.Name : string.Empty : string.Empty,
-
-                // Mechanical Attributes
-                ScheduleId = lineDetails.SchedulePipeId.HasValue ? lineDetails.SchedulePipeId.Value : Guid.Empty,
-                WallThickness = lineDetails.WallThicknessPipe.ToString(),
-                TestPressure = lineDetails.TestPressurePipe,
-                TestMediumId = lineDetails.TestMediumPipeId.HasValue ? lineDetails.TestMediumPipeId.Value : Guid.Empty,
-                MDMT = lineDetails.MinimumDesignMetalTemperature,
-                CorrosionAllowanceId = lineDetails.CorrosionAllowancePipeId.HasValue ? lineDetails.CorrosionAllowancePipeId.Value : Guid.Empty,
-                XRayId = lineDetails.XrayPipeId.HasValue ? lineDetails.XrayPipeId.Value : Guid.Empty,
-                NDECategoryId = lineDetails.NdeCategoryPipeId.HasValue ? lineDetails.NdeCategoryPipeId.Value : Guid.Empty,
-                PWHTId = lineDetails.PostWeldHeatTreatmentId.HasValue ? lineDetails.PostWeldHeatTreatmentId.Value : Guid.Empty,
-                StressAnalysisId = lineDetails.StressAnalysisId.HasValue ? lineDetails.StressAnalysisId.Value : Guid.Empty,
-                InternalCoatingId = lineDetails.InternalCoatingLinerId.HasValue ? lineDetails.InternalCoatingLinerId.Value : Guid.Empty,
-                CodeId = primaryOpMode != null ? primaryOpMode.CodeId.HasValue ? primaryOpMode.CodeId.Value : Guid.Empty : Guid.Empty,
-                LineRevisionOperatingModeId = primaryOpMode != null ? primaryOpMode.Id : Guid.Empty,
-
-                // CSA Pipelines
-                FluidId = primaryOpMode.FluidId.HasValue ? primaryOpMode.FluidId.Value : Guid.Empty,
-                FluidName = primaryOpMode != null ? primaryOpMode.Fluid != null ? primaryOpMode.Fluid.Name : string.Empty : string.Empty,
-                CsaClassLocationId = primaryOpMode.CsaClassLocationId.HasValue ? primaryOpMode.CsaClassLocationId.Value : Guid.Empty,
-                CsaHvpLvpId = primaryOpMode.CsaHvpLvpId.HasValue ? primaryOpMode.CsaHvpLvpId.Value : Guid.Empty,
-                CsaClassLocationName = primaryOpMode != null ? primaryOpMode.CsaClassLocation != null ? primaryOpMode.CsaClassLocation.Name : string.Empty : string.Empty,
-                CsaHvpLvpName = primaryOpMode != null ? primaryOpMode.CsaHvpLvp != null ? primaryOpMode.CsaHvpLvp.Name : string.Empty : string.Empty,
-                PipeMaterialSpec = primaryOpMode != null ? primaryOpMode.PipeMaterialSpecification : string.Empty,
-                HoopStressLevel = primaryOpMode != null ? primaryOpMode.HoopStressLevel.ToString() : string.Empty,
-                //SourService = primaryOpMode != null ? primaryOpMode.IsSourService.ToString() : string.Empty,
-
-                // Jacket Information
-                //Jacket = Segment.TracingType != null ? Segment.TracingType.Name_dash_Description : string.Empty,
-                JacketSizeNpsPipeId = lineDetails.SizeNpsAnnulusId.HasValue ? lineDetails.SizeNpsAnnulusId.Value : Guid.Empty,
-                JacketDesignPressure = lineDetails.DesignPressureAnnulus,
-                JacketUpsetPressure = lineDetails.UpsetPressureAnnulus,
-                JacketDesignTempMin = lineDetails.DesignTemperatureMinimumAnnulus,
-                JacketUpsetTemp = lineDetails.UpsetTemperatureAnnulus,
-                JacketDesignTempMax = lineDetails.DesignTemperatureMaximumAnnulus,
-                JacketScheduleId = lineDetails.ScheduleAnnulusId.HasValue ? lineDetails.ScheduleAnnulusId.Value : Guid.Empty,
-                JacketCorrosionAllowanceId = lineDetails.CorrosionAllowanceAnnulusId.HasValue ? lineDetails.CorrosionAllowanceAnnulusId.Value : Guid.Empty,
-                JacketWallThickness = lineDetails.WallThicknessAnnulus.ToString(),
-                JacketXRayId = lineDetails.XrayAnnulusId.HasValue ? lineDetails.XrayAnnulusId.Value : Guid.Empty,
-                JacketTestPressure = lineDetails.TestPressureAnnulus,
-                JacketNDECategoryId = lineDetails.NdeCategoryAnnulusId.HasValue ? lineDetails.NdeCategoryAnnulusId.Value : Guid.Empty,
-                JacketTestMediumId = lineDetails.TestMediumAnnulusId.HasValue ? lineDetails.TestMediumAnnulusId.Value : Guid.Empty,
-
-                //Properties Tab
-                Id = lineDetails.Id,
-                CreatedBy = lineDetails.CreatedBy,
-                CreatedOn = lineDetails.CreatedOn,
-                ModifiedBy = lineDetails.ModifiedBy,
-                ModifiedOn = lineDetails.ModifiedOn,
-                IsMinimumInformationCompliance = lineDetails.RequiresMinimumInformation,
-                IsActive = lineDetails.IsActive,
-                ChildNumber = lineDetails.Line.ChildNumber,
-
-                //Mode = lineDetails.LineRevisionOperatingModes,
-
-                LineRevisionOperatingModes = allModes
-                .Where(m => m.OperatingModeNumber != "1")
-                .ToList(),
-
-                // Additional UI elements
-                IsCsa = primaryOpMode != null && primaryOpMode.Code != null && primaryOpMode.Code.IsCsa,
-
-                //Segment Grid list
-                LineRevisionSegment = Segments
-
-
             };
 
-            
+            // 2. Line Identification
+            model.LocationName = lineDetails?.Line?.Location?.Name ?? string.Empty;
+            model.CommodityName = lineDetails?.Line?.Commodity?.Name ?? string.Empty;
+            model.SpecificationName = lineDetails?.Specification?.Name ?? string.Empty;
+            model.AreaId = lineDetails?.AreaId ?? Guid.Empty;
+            model.PipeSpecificationId = lineDetails?.PipeSpecificationId ?? Guid.Empty;
+            model.SizeNpsPipeId = lineDetails?.SizeNpsPipeId ?? Guid.Empty;
+            model.SequenceNumber = lineDetails?.Line?.SequenceNumber.ToString();
+            model.Revision = lineDetails?.Revision;
+            model.OriginatingPID = lineDetails?.OriginatingPID;
+            model.IsChild = lineDetails?.Line?.ChildNumber > 0;
+            model.ModularId = lineDetails?.Line?.ModularId ?? string.Empty;
 
-            return PartialView("_Update", Model);
+            // 3. Operating Mode Details
+            model.LineRoutingFrom = primaryOpMode?.LineRoutingFrom ?? string.Empty;
+            model.LineRoutingTo = primaryOpMode?.LineRoutingTo ?? string.Empty;
+            model.OperatingModeNumber = primaryOpMode?.OperatingModeNumber ?? string.Empty;
+            model.OperatingModeId = primaryOpMode?.OperatingModeId ?? Guid.Empty;
+            model.OperatingModeIdDescription = primaryOpMode?.OperatingModeId != null
+                ? operatingModes.FirstOrDefault(m => m.Id == primaryOpMode.OperatingModeId)?.Description ?? "N/A"
+                : "N/A";
+            model.LineRevisionStatus = lineDetails?.LineStatus?.Name ?? string.Empty;
+
+            // 4. Process Attributes
+            model.OperatingPressurePipe = primaryOpMode?.OperatingPressurePipe ?? string.Empty;
+            model.OperatingTemp = primaryOpMode?.OperatingTemperaturePipe ?? string.Empty;
+            model.FluidPhaseId = primaryOpMode?.FluidPhaseId ?? Guid.Empty;
+            model.FluidPhaseName = primaryOpMode?.FluidPhase?.Name ?? string.Empty;
+            model.DesignPressure = lineDetails?.DesignPressurePipe;
+            model.DesignTempMax = lineDetails?.DesignTemperatureMaximumPipe;
+            model.DesignTempMin = lineDetails?.DesignTemperatureMinimumPipe;
+            model.Notes = primaryOpMode?.Notes ?? string.Empty;
+            model.ExpansionTemp = lineDetails?.ExpansionTemperature;
+            model.UpsetPressure = lineDetails?.UpsetPressurePipe;
+            model.UpsetTemp = lineDetails?.UpsetTemperaturePipe;
+            model.PressureProtectionName = primaryOpMode?.PressureProtection?.Name ?? string.Empty;
+
+            // 5. Mechanical Attributes
+            model.ScheduleId = lineDetails?.SchedulePipeId ?? Guid.Empty;
+            model.WallThickness = lineDetails?.WallThicknessPipe.ToString();
+            model.TestPressure = lineDetails?.TestPressurePipe;
+            model.TestMediumId = lineDetails?.TestMediumPipeId ?? Guid.Empty;
+            model.MDMT = lineDetails?.MinimumDesignMetalTemperature;
+            model.CorrosionAllowanceId = lineDetails?.CorrosionAllowancePipeId ?? Guid.Empty;
+            model.XRayId = lineDetails?.XrayPipeId ?? Guid.Empty;
+            model.NDECategoryId = lineDetails?.NdeCategoryPipeId ?? Guid.Empty;
+            model.PWHTId = lineDetails?.PostWeldHeatTreatmentId ?? Guid.Empty;
+            model.StressAnalysisId = lineDetails?.StressAnalysisId ?? Guid.Empty;
+            model.InternalCoatingId = lineDetails?.InternalCoatingLinerId ?? Guid.Empty;
+            model.CodeId = primaryOpMode?.CodeId ?? Guid.Empty;
+            model.LineRevisionOperatingModeId = primaryOpMode?.Id ?? Guid.Empty;
+
+            // 6. CSA Pipelines
+            model.FluidId = primaryOpMode?.FluidId ?? Guid.Empty;
+            model.FluidName = primaryOpMode?.Fluid?.Name ?? string.Empty;
+            model.CsaClassLocationId = primaryOpMode?.CsaClassLocationId ?? Guid.Empty;
+            model.CsaHvpLvpId = primaryOpMode?.CsaHvpLvpId ?? Guid.Empty;
+            model.CsaClassLocationName = primaryOpMode?.CsaClassLocation?.Name ?? string.Empty;
+            model.CsaHvpLvpName = primaryOpMode?.CsaHvpLvp?.Name ?? string.Empty;
+            model.PipeMaterialSpec = primaryOpMode?.PipeMaterialSpecification ?? string.Empty;
+            model.HoopStressLevel = primaryOpMode?.HoopStressLevel.ToString() ?? string.Empty;
+
+            // 7. Jacket Info
+            model.JacketSizeNpsPipeId = lineDetails?.SizeNpsAnnulusId ?? Guid.Empty;
+            model.JacketDesignPressure = lineDetails?.DesignPressureAnnulus;
+            model.JacketUpsetPressure = lineDetails?.UpsetPressureAnnulus;
+            model.JacketDesignTempMin = lineDetails?.DesignTemperatureMinimumAnnulus;
+            model.JacketUpsetTemp = lineDetails?.UpsetTemperatureAnnulus;
+            model.JacketDesignTempMax = lineDetails?.DesignTemperatureMaximumAnnulus;
+            model.JacketScheduleId = lineDetails?.ScheduleAnnulusId ?? Guid.Empty;
+            model.JacketCorrosionAllowanceId = lineDetails?.CorrosionAllowanceAnnulusId ?? Guid.Empty;
+            model.JacketWallThickness = lineDetails?.WallThicknessAnnulus.ToString();
+            model.JacketXRayId = lineDetails?.XrayAnnulusId ?? Guid.Empty;
+            model.JacketTestPressure = lineDetails?.TestPressureAnnulus;
+            model.JacketNDECategoryId = lineDetails?.NdeCategoryAnnulusId ?? Guid.Empty;
+            model.JacketTestMediumId = lineDetails?.TestMediumAnnulusId ?? Guid.Empty;
+
+            // 8. Properties
+            model.Id = lineDetails?.Id ?? Guid.Empty;
+            model.CreatedBy = lineDetails?.CreatedBy;
+            model.CreatedOn = lineDetails?.CreatedOn ?? DateTime.MinValue;
+            model.ModifiedBy = lineDetails?.ModifiedBy;
+            model.ModifiedOn = lineDetails?.ModifiedOn ?? DateTime.MinValue;
+            model.IsMinimumInformationCompliance = lineDetails?.RequiresMinimumInformation ?? false;
+            model.IsActive = lineDetails?.IsActive ?? false;
+            model.ChildNumber = lineDetails?.Line?.ChildNumber ?? 0;
+
+            // 9. Misc
+            model.LineRevisionOperatingModes = allModes
+                .Where(m => m.OperatingModeNumber != "1")
+                .ToList();
+
+            model.IsCsa = primaryOpMode?.Code?.IsCsa ?? false;
+            model.LineRevisionSegment = Segments;
+
+
+
+
+            return PartialView("_Update", model);
         }
 
         // GET JSON for a single operating mode

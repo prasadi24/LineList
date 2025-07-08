@@ -69,42 +69,30 @@ namespace LineList.Cenovus.Com.UI.New.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var commodities = _commodityService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var facilities = _facilityService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var cenovusProjects = _cenovusProjectService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var projectTypes = _projectTypeService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var specifications = _specificationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var ePs = _epCompanyService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var lineListStatuses = _lineListStatusService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var locations = _locationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var ePProjects = _epProjectService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var areas = _areaService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var pipeSpecifications = _pipeSpecificationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var lineStatuses = _lineStatusService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
-            var lineLists = _lineListModelService.GetAll().Result.ToList();
-
             var model = new SearchLineListViewModel
             {
-                Commodities = commodities,
-                Facilities = facilities,
-                CenovusProjects = cenovusProjects,
-                ProjectTypes = projectTypes,
-                Specifications = specifications,
-                EPs = ePs,
-                LineListStatuses = lineListStatuses,
-                Locations = locations,
-                EPProjects = ePProjects,
-                Areas = areas,
-                PipeSpecifications = pipeSpecifications,
-                LineStatuses = lineStatuses,
-                LineLists = lineLists//,
-                                     //ModularDetails = modulardetails
+                Commodities = _commodityService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                Facilities = _facilityService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                CenovusProjects = _cenovusProjectService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                ProjectTypes = _projectTypeService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                Specifications = _specificationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                EPs = _epCompanyService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                LineListStatuses = _lineListStatusService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                Locations = _locationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                EPProjects = _epProjectService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                Areas = _areaService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                PipeSpecifications = _pipeSpecificationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                LineStatuses = _lineStatusService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList(),
+                LineLists = _lineListModelService.GetAll().Result.ToList(),
+
+                SelectedFacilityId = Guid.Parse("CB7B27C6-F926-4C3D-9A78-08DB0DBD746C"), // Facility = BT
+                AutoSearch = true,
+                ShowDrafts = false
             };
 
-
-            model.ShowDrafts = false;
             return View(model);
         }
+
         [HttpPost]
         public async Task<IActionResult> SearchResult(SearchLineListViewModel model)
         {

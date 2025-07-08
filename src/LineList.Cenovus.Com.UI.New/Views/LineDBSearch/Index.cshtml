@@ -336,6 +336,14 @@
                     dropdown.append($('<option></option>').val(item.id).text(item.name + " - " + item.description));
                 });
             }
+
+            var autoSearch = @Model.AutoSearch.ToString().ToLower();
+if (autoSearch) {
+    $('#facilityDropdown').val('CB7B27C6-F926-4C3D-9A78-08DB0DBD746C'); // Select BT
+    $('#btnSearch').trigger('click'); // Trigger search
+}
+
+
         });
 
         // Hide the search toggle in datatable

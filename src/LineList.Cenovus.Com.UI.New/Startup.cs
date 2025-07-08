@@ -155,8 +155,9 @@ namespace LineList.Cenovus.Com.UI
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=LineDBSearch}/{action=Index}/{id?}");
             });
+
         }
     }
 }

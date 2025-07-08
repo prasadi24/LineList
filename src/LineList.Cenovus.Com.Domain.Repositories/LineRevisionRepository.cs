@@ -1,4 +1,6 @@
-﻿using LineList.Cenovus.Com.API.DataTransferObjects.Line;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
+using LineList.Cenovus.Com.API.DataTransferObjects.Line;
 using LineList.Cenovus.Com.Domain.Interfaces.RepositoryInterfaces;
 using LineList.Cenovus.Com.Domain.Models;
 using LineList.Cenovus.Com.Infrastructure.Context;
@@ -123,6 +125,36 @@ namespace LineList.Cenovus.Com.Domain.Repositories
 
             return lines;
         }
+
+//        -- 🔹 Main LineRevision + includes
+//SELECT* FROM LineRevision WHERE LineId = 'your-line-id';
+//SELECT* FROM Line WHERE Id = 'your-line-id';
+//SELECT* FROM LineStatus;
+//SELECT* FROM Location;
+//SELECT* FROM Commodity;
+//SELECT* FROM SizeNps;
+//SELECT* FROM LineRevisionOperatingMode;
+//SELECT* FROM LineRevisionSegment;
+//SELECT* FROM SegmentType;
+
+//        -- 🔹 Full LineRevision with navigation data
+//SELECT
+//    lr.*,
+//    l.SequenceNumber AS Line_SequenceNumber,
+//    l.ChildNumber AS Line_ChildNumber,
+//    loc.Name AS Location_Name,
+//    com.Name AS Commodity_Name,
+//    stat.Name AS LineStatus_Name,
+//    snps.Name AS SizeNps_Name
+//FROM LineRevision lr
+//LEFT JOIN Line l ON lr.LineId = l.Id
+//LEFT JOIN Location loc ON l.LocationId = loc.Id
+//LEFT JOIN Commodity com ON l.CommodityId = com.Id
+//LEFT JOIN LineStatus stat ON lr.LineStatusId = stat.Id
+//LEFT JOIN SizeNps snps ON lr.SizeNpsPipeId = snps.Id
+//WHERE lr.LineId = 'cccccccc-cccc-cccc-cccc-cccccccccccc'
+//FOR JSON AUTO, INCLUDE_NULL_VALUES
+
 
         public async Task<List<LineRevision>> GetByLineListRevisionId(Guid lineListRevisionId)
         {
