@@ -10,37 +10,37 @@
         <div class="nav-align-top mb-4">
             <!-- Tab Navigation -->
             <ul class="nav nav-tabs" role="tablist">
-      <li class="nav-item">
-          <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#details" type="button" role="tab">
-              Details
-          </button>
-      </li>
-      <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Segments" data-bs-target="#segments" type="button" role="tab">
-              Segments
-          </button>
-      </li>
-      <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#segments2" type="button" role="tab">
-              Segments Old
-          </button>
-      </li>
-      <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#alt-operating-mode" type="button" role="tab">
-              Alternative Operating Mode
-          </button>
-      </li>
-      <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#jacket-info" type="button" role="tab">
-              Jacket Info
-          </button>
-      </li>
-      <li class="nav-item">
-          <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#properties" type="button" role="tab">
-              Properties
-          </button>
-      </li>
-  </ul>
+                <li class="nav-item">
+                    <button class="nav-link active" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Details" data-bs-target="#details" type="button" role="tab">
+                        Details
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Segments" data-bs-target="#segments" type="button" role="tab">
+                        Segments
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#segments2" type="button" role="tab">
+                        Segments Old
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#alt-operating-mode" type="button" role="tab">
+                        Alternative Operating Mode
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#jacket-info" type="button" role="tab">
+                        Jacket Info
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-toggle="tooltip" data-placement="right" title="Properties" data-bs-target="#properties" type="button" role="tab">
+                        Properties
+                    </button>
+                </li>
+            </ul>
             <input type="hidden" id="lineCollectionId" value="@Model.LineId" />
             <!-- Tab Content -->
             <div class="tab-content p-0 m-0 ">
@@ -414,8 +414,169 @@
                 </div>
 
 
+
                 <!-- Segments Tab -->
+
                 <div class="tab-pane fade" id="segments" role="tabpanel">
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold d-flex justify-content-between align-items-center">
+                            <span>Segments List</span>
+                            <button class="btn btn-outline-primary btn-sm" id="btnCreateNewSegment">
+                                <i class="fas fa-plus me-1"></i> ADD NEW SEGMENT
+                            </button>
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-12">
+                                    <table class="table table-sm mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 100px;">Actions</th>
+                                                <th style="width: 150px;">Segment #</th>
+                                                <th>Segment Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.LineRevisionSegment)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <button class="btn btn-sm btn-outline-primary btn-segment-update" data-id="@item.Id" title="Edit Segment">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn btn-sm btn-outline-danger btn-segment-delete" data-id="@item.Id" title="Delete Segment">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>@item.SegmentNumber</td>
+                                                    <td>
+                                                        @if (item.SegmentTypeId != null)
+                                                        {
+                                                            @item.SegmentType.Description
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card border-secondary mb-3">
+                        <div class="card-header bg-box search-box text-black fw-bold">
+                            Segment Details - <asp:Label ID="lblSegmentType" runat="server"></asp:Label>
+                        </div>
+                        <div class="card-body border border-gray search-box p-2">
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Segment Type:</label>
+                                    <select asp-for="SegmentTypeId" class="form-select me-4" id="segmentType">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var segmentType in Model.SegmentTypes)
+                                        {
+                                            <option value="@segmentType.Id">@segmentType.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Operating Temp (°C):</label>
+                                    <input asp-for="OperatingTemp" class="form-control me-4" readonly placeholder="Enter Commodity" />
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Size NPS:</label>
+                                    <select asp-for="SizeNpsPipeId" class="form-select me-4" id="cboSizeNPS">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var size in Model.SizeNpsPipes)
+                                        {
+                                            <option value="@size.Id">@size.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Material:</label>
+                                    <select asp-for="InsulationMaterialId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var im in Model.InsulationMaterials)
+                                        {
+                                            <option value="@im.Id">@im.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Type:</label>
+                                    <select asp-for="InsulationTypeId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var type in Model.InsulationTypes)
+                                        {
+                                            <option value="@type.Id">@type.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Tracing Design Type:</label>
+                                    <select asp-for="TracingDesignId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var tracing in Model.TracingTypes)
+                                        {
+                                            <option value="@tracing.Id">@tracing.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Insulation Thickness (mm):</label>
+                                    <select asp-for="InsulationThicknessId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var thickness in Model.InsulationThicknesses)
+                                        {
+                                            <option value="@thickness.Id">@thickness.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Number of Tracers:</label>
+                                    <select asp-for="NumTracerId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var tracer in Model.TracingDesignNumTracers)
+                                        {
+                                            <option value="@tracer.Id">@tracer.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Tracing Design Hold Temp (°C):</label>
+                                    <input asp-for="TracingDesignHoldTemp" class="form-control me-4" placeholder="Enter Hold Temp" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-1">
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 w-50 text-black">Paint System:</label>
+                                    <select asp-for="PaintSystemId" class="form-select me-4">
+                                        <option value="">-- Select --</option>
+                                        @foreach (var paint in Model.PaintSystems)
+                                        {
+                                            <option value="@paint.Id">@paint.Name</option>
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Segments Old Tab -->
+                <div class="tab-pane fade" id="segments2" role="tabpanel">
                     <h5 id="SegmentCaption">
                         Select a Segment to Edit Below
                     </h5>

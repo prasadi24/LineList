@@ -101,6 +101,7 @@ namespace LineList.Cenovus.Com.UI.Controllers
             IOperatingModeService operatingModeService,
             ILineRevisionSegmentService lineRevisionSegmentService,
 
+            
             IUserPreferenceService userPreferenceService,
             CurrentUser currentUser,
             IInsulationThicknessService insulationThicknessService,
@@ -536,6 +537,7 @@ namespace LineList.Cenovus.Com.UI.Controllers
             var fluids = _fluidService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
             var csaClassLocations = _csaClassLocationService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
             var csaHvpLvps = _csaHvpLvpService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
+            //var insulationTypes = insulationTypeService.GetAll().Result.Where(o => o.IsActive).OrderBy(o => o.SortOrder).ToList();
 
             if (lineDetails == null)
                 return NotFound();
